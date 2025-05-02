@@ -1,0 +1,25 @@
+// === Cores principais (intuitivas para ações) ===
+$color-blue: #007BFF;      // Azul — padrão, neutro, links, ações secundárias
+$color-green: #28A745;     // Verde — salvar, confirmar, sucesso
+$color-yellow: #FFC107;    // Amarelo — aviso, atenção
+$color-red: #DC3545;       // Vermelho — deletar, erro, cancelar
+
+// === Variações para hover, bordas, e elementos suaves ===
+$color-blue-light: #66B2FF;
+$color-blue-dark: #0056b3;
+
+$color-green-light: #5CD68A;
+$color-green-dark: #1c7c35;
+
+$color-yellow-light: #FFE082;
+$color-yellow-dark: #cc9a06;
+
+$color-red-light: #F28B8B;
+$color-red-dark: #a71d2a;
+
+// === Cores neutras para fundo, texto e contraste ===
+$color-white: #FFFFFF;
+$color-gray-light: #F8F9FA;
+$color-gray: #6C757D;
+$color-gray-dark: #343A40;
+$color-black: #000000;
