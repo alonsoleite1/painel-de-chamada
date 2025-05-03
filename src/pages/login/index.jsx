@@ -1,12 +1,16 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import logo from "../../assets/logo.png";
+import { useNavigate } from 'react-router-dom';
 import styles from "./styles.module.scss";
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
+  const navigate = useNavigate();
+
   const onSubmit = (data) => {
+    navigate("/painel");
     console.log('Dados enviados:', data);
   };
 

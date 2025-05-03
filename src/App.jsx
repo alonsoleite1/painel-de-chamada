@@ -1,13 +1,12 @@
 import RoutesMain from "./routes/routesMain";
 import "./styles/index.scss";
-function App() {
-  
 
+function App() {
   return (
     <>
-    <RoutesMain/>
+      <RoutesMain />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

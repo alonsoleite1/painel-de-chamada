@@ -1,95 +1,60 @@
-@use '../../styles/globals.scss' as *; 
+@use '../../styles/globals.scss' as *;
 
-// Container do header
 .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: $color-primary;  // Cor da variável global
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-// Logo
-.logo {
-  flex-shrink: 0;
+  height: 4rem;
+  padding: 0 1rem;
+  background-color: rgba($color-white, 0.85);  // Branco com leve transparência
+  color: $color-black;
 }
 
 .logoImg {
-  height: 50px;
+  height: 2.5rem;
   width: auto;
 }
 
-// Caixa de informações do usuário
 .infoBox {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  gap: 2rem;
 }
 
-// Informações do usuário
 .userInfo {
   display: flex;
-  align-items: center;
-  margin-right: 2rem;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
 }
 
 .userDetail {
   display: flex;
   align-items: center;
-  margin-right: 1rem;
-  color: $color-white;  // Cor de texto global
+  gap: 0.5rem;
+  font-size: 0.9rem;
+
+  svg {
+    color: $color-green-dark;
+  }
+
+  p {
+    margin: 0;
+    color: $color-blue;
+  }
 }
 
-.userDetail p {
-  margin-left: 0.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-// Ícones
-.FaRegCircleUser,
-.MdHomeWork {
-  font-size: 1.2rem;
-  color: $color-white;  // Cor dos ícones, adaptado da variável
-}
-
-// Botão de logout
 .logoutButton {
-  background-color: $color-secondary; // Cor do botão de logout
-  color: $color-white; // Cor do texto
-  padding: 0.5rem 1.5rem;
-  font-size: 1rem;
-  font-weight: bold;
+  background-color: $color-red;
   border: none;
-  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  color: $color-white;
+  border-radius: 0.25rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease-in-out;
 
   &:hover {
-    background-color: darken($color-secondary, 10%);
-  }
-}
-
-// Responsividade para telas pequenas
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .infoBox {
-    margin-top: 1rem;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .userInfo {
-    margin-bottom: 1rem;
-  }
-
-  .logoutButton {
-    width: 100%;
-    margin-top: 1rem;
+    background-color: $color-red-dark;
   }
 }

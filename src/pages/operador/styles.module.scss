@@ -1,0 +1,135 @@
+@use '../../styles/globals.scss' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  gap: 3rem;
+}
+
+.botoes {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+
+  .botaoBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    button {
+      padding: 1.2rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 0.6rem;
+      cursor: pointer;
+      color: $color-white;
+
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+
+    span {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      color: $color-gray-dark;
+    }
+
+    &:nth-child(1) button {
+      background-color: $color-blue;
+
+      &:hover {
+        background-color: $color-blue-dark;
+      }
+    }
+
+    &:nth-child(2) button {
+      background-color: $color-yellow;
+
+      &:hover {
+        background-color: $color-yellow-dark;
+      }
+    }
+
+    &:nth-child(3) button {
+      background-color: $color-green;
+
+      &:hover {
+        background-color: $color-green-dark;
+      }
+    }
+  }
+}
+
+.form {
+  background-color: $color-gray-light;
+  padding: 2rem;
+  border-radius: 0.6rem;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+
+  .senhaDestaque {
+    font-size: 2.5rem;
+    color: $color-black;
+    font-weight: bold;
+  }
+
+  .chamarNovamente,
+  .finalizar {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .chamarNovamente {
+    background-color: $color-yellow;
+
+    &:hover {
+      background-color: $color-yellow-dark;
+    }
+  }
+
+  .finalizar {
+    background-color: $color-green;
+
+    &:hover {
+      background-color: $color-green-dark;
+    }
+  }
+}
+
+.atendimentosFinalizados {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 2rem;
+  
+    h3 {
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+  
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+  
+    li {
+      background-color: #f1f3f5;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      border-radius: 0.3rem;
+    }
+  }

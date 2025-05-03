@@ -1,8 +1,8 @@
 // === Cores principais (intuitivas para ações) ===
-$color-blue: #007BFF;      // Azul — padrão, neutro, links, ações secundárias
-$color-green: #28A745;     // Verde — salvar, confirmar, sucesso
-$color-yellow: #FFC107;    // Amarelo — aviso, atenção
-$color-red: #DC3545;       // Vermelho — deletar, erro, cancelar
+$color-blue: #007BFF;
+$color-green: #28A745;
+$color-yellow: #FFC107;
+$color-red: #DC3545;
 
 // === Variações para hover, bordas, e elementos suaves ===
 $color-blue-light: #66B2FF;
@@ -23,3 +23,6 @@ $color-gray-light: #F8F9FA;
 $color-gray: #6C757D;
 $color-gray-dark: #343A40;
 $color-black: #000000;
+
+// === Nova cor para páginas ou fundo de seções ===
+$color-pages: #F1F3F5;  // Uma cor mais suave que o cinza claro para fundo de páginas

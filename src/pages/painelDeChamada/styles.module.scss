@@ -1,0 +1,51 @@
+@use '../../styles/globals.scss' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.headerArea {
+  height: 20%;
+  display: flex;
+  flex-direction: column;
+}
+
+.normal, .prioritario {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 3rem;
+  font-size: 4rem;
+  font-weight: 600;
+  color: $color-white;
+
+  p {
+    margin: 0;
+  }
+
+  span {
+    font-size: 5rem;
+    font-weight: bold;
+  }
+}
+
+.normal {
+  background-color: $color-blue;
+}
+
+.prioritario {
+  background-color: $color-green;
+}
+
+.slideArea {
+  height: 80%;
+  background-color: $color-gray-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: $color-gray-dark;
+}

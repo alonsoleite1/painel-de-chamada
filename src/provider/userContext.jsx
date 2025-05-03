@@ -45,13 +45,13 @@ export const UsuarioContextProvider = ({ children }) => {
     }, []);
 
     // Mova o redirecionamento aqui para garantir que só acontece se o loading estiver falso
-    useEffect(() => {
+   /* useEffect(() => {
         if (!loading) {
             if (!user) {
                 navigate(""); // Redireciona apenas se não houver usuário
             }
         }
-    }, [loading, user, navigate]);
+    }, [loading, user, navigate]);*/
 
     const login = async (formData) => {
         try {
