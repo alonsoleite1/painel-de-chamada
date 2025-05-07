@@ -69,7 +69,7 @@ const Painel = () => {
         <p>Slides serão exibidos aqui</p>
       </div>
     </div>
-  );
+  )   
 };
 
 export default Painel;
