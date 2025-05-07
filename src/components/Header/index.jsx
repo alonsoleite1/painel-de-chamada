@@ -18,10 +18,10 @@ const Header = () => {
                 <div className={styles.infoBox}>
                     <div className={styles.userInfo}>
                         <span className={styles.userDetail}>
-                            <FaRegCircleUser /><p>{nome}Alonso Leite</p>
+                            <FaRegCircleUser /><p>{nome}</p>
                         </span>
                         <span className={styles.userDetail}>
-                            <MdHomeWork /><p>{unidade}Secretaria de Saúde</p>
+                            <MdHomeWork /><p>{unidade}</p>
                         </span>
                     </div>
                     <button className={styles.logoutButton} onClick={logout}>Sair</button>

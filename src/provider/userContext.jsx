@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import  api  from "../services/api";
+import api from "../services/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -45,36 +45,50 @@ export const UsuarioContextProvider = ({ children }) => {
     }, []);
 
     // Mova o redirecionamento aqui para garantir que só acontece se o loading estiver falso
-   /* useEffect(() => {
+    useEffect(() => {
         if (!loading) {
             if (!user) {
                 navigate(""); // Redireciona apenas se não houver usuário
             }
         }
-    }, [loading, user, navigate]);*/
+    }, [loading, user, navigate]);
 
     const login = async (formData) => {
         try {
             const { data } = await api.post("/usuario/login", formData);
             const token = data.accessToken;
-
+            const { nome, unidade, perfil, terminal,cpf } = data.user;
+    
             setUser(data.user);
-            setNome(data.user.nome);
-            setUnidade(data.user.unidade);
-            setPerfil(data.user.perfil);
-
+            setNome(nome);
+            setUnidade(unidade);
+            setPerfil(perfil);
+    
             localStorage.setItem("@token", JSON.stringify(token));
-            localStorage.setItem("@nome", JSON.stringify(data.user.nome));
-            localStorage.setItem("@unidade", JSON.stringify(data.user.unidade));
-            localStorage.setItem("@perfil", JSON.stringify(data.user.perfil));
-            localStorage.setItem("@unidadeId", JSON.stringify(data.user.unidadeId));
-
-            toast.success("Bem-vindo!");
-            navigate("/inicio");
+            localStorage.setItem("@cpf", JSON.stringify(cpf));
+            localStorage.setItem("@nome", JSON.stringify(nome));
+            localStorage.setItem("@unidade", JSON.stringify(unidade));
+            localStorage.setItem("@perfil", JSON.stringify(perfil));
+            localStorage.setItem("@terminal", JSON.stringify(terminal));
+    
+            const rotas = {
+                recepcao: "/recepcao",
+                operador: "/selecao",
+                gestor: "/operador",
+            };
+    
+            if (rotas[perfil]) {
+                toast.success("Bem-vindo!");
+                navigate(rotas[perfil]);
+            } else {
+                toast.error("Perfil não autorizado!");
+            }
+    
         } catch (error) {
             toast.error("Login ou senha inválidos!");
         }
     };
+    
 
     const logout = () => {
         navigate("");
@@ -83,6 +97,8 @@ export const UsuarioContextProvider = ({ children }) => {
         localStorage.removeItem("@nome");
         localStorage.removeItem("@unidade");
         localStorage.removeItem("@perfil");
+        localStorage.removeItem("@terminal");
+        localStorage.removeItem("@cpf");
     };
 
     return (

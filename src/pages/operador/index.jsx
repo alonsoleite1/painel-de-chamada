@@ -1,111 +1,175 @@
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useEffect, useContext } from "react";
 import DefaultTemplate from "../../components/DefaultTemplate";
+import api from "../../services/api";
+import { toast } from "react-toastify";
+import io from "socket.io-client"; // Importa a biblioteca do socket
 import styles from "./styles.module.scss";
+import { UsuarioContext } from "../../provider/userContext";
+
+const socket = io("http://localhost:3000"); // Conecta-se ao servidor WebSocket
 
 const Operador = () => {
-  const [fila, setFila] = useState({
-    normal: [],
-    prioritario: [],
-    coordenacao: [],
-  });
-
+  const [fila, setFila] = useState({ normal: [], prioritario: [] });
   const [atendimentoAtual, setAtendimentoAtual] = useState(null);
   const [atendimentosFinalizados, setAtendimentosFinalizados] = useState([]);
-  const { handleSubmit } = useForm();
 
-  // Simula dados recebidos da API
+  const token = JSON.parse(localStorage.getItem("@token")) || "";
+  const { user } = useContext(UsuarioContext);
+
   useEffect(() => {
-    const dadosExemplo = {
-      normal: [
-        { id: 1, numero: "N001" },
-        { id: 4, numero: "N002" },
-      ],
-      prioritario: [
-        { id: 2, numero: "P001" },
-        { id: 5, numero: "P002" },
-      ],
-      coordenacao: [
-        { id: 3, numero: "C001" },
-        { id: 6, numero: "C002" },
-      ],
+    const buscarAtendimentos = async () => {
+      try {
+        const { data } = await api.get("/painel", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const aguardando = data.filter((item) => item.status === "aguardando");
+        const filaNormal = aguardando.filter((item) => item.tipo === "normal");
+        const filaPrioritario = aguardando.filter(
+          (item) => item.tipo === "prioritario"
+        );
+
+        setFila({ normal: filaNormal, prioritario: filaPrioritario });
+      } catch (error) {
+        toast.error("Erro ao buscar atendimentos");
+        console.error(error);
+      }
     };
-    setFila(dadosExemplo);
-  }, []);
+
+    buscarAtendimentos();
+  }, [token]);
 
   const chamarProximo = async (tipo) => {
     const proximo = fila[tipo][0];
     if (!proximo) return;
-
-    // Simula uma chamada de API
-    setTimeout(() => {
-      console.log(`Atualizado ${proximo.numero} para "em_atendimento"`);
+  
+    try {
+      await api.patch(
+        `/painel/${proximo.id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+  
       setAtendimentoAtual({ ...proximo, tipo });
+  
+      // Emite um evento para o painel chamar a senha
+      console.log("Emitindo evento para o painel:", proximo.senha, proximo.setor);
+      
+      // Verifica se o operador está vinculado a um guichê
+      if (user.terminal) {
+        // Se houver um guichê vinculado, emite a chamada para esse guichê
+        console.log("Emitindo evento para o guichê:", user.terminal);
+        socket.emit("chamar-senha", {
+          senha: proximo.senha,
+          setor: proximo.setor,
+          tipo,
+          guiche: user.terminal, // Envia o guichê vinculado
+        });
+      } else {
+        // Caso contrário, chama a senha para o painel sem guichê
+        socket.emit("chamar-senha", {
+          senha: proximo.senha,
+          setor: proximo.setor,
+          tipo,
+        });
+      }
+  
       setFila((prev) => ({
         ...prev,
         [tipo]: prev[tipo].slice(1),
       }));
-    }, 500);
+      toast.info(`Chamando senha ${proximo.senha}`);
+    } catch (error) {
+      toast.error("Erro ao atualizar atendimento");
+      console.error(error);
+    }
+  };
+  
+
+  const repetirChamada = () => {
+    if (atendimentoAtual) {
+      // Emite um evento para o painel repetir a chamada da senha
+      console.log("Repetindo chamada da senha:", atendimentoAtual.senha);
+      socket.emit("chamar-senha", {
+        senha: atendimentoAtual.senha,
+        setor: atendimentoAtual.setor,
+        tipo: atendimentoAtual.tipo,
+      });
+    }
   };
 
   const finalizarAtendimento = async () => {
     if (!atendimentoAtual) return;
 
-    // Simula uma chamada de API
-    setTimeout(() => {
-      console.log(`Finalizado atendimento de ${atendimentoAtual.numero}`);
+    try {
+      await api.patch(`/painel/${atendimentoAtual.id}`, { status: "encerrado" }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
       setAtendimentosFinalizados((prev) => [
         ...prev,
         { ...atendimentoAtual, status: "encerrado" },
       ]);
       setAtendimentoAtual(null);
-    }, 500);
+      toast.success("Atendimento finalizado");
+    } catch (error) {
+      toast.error("Erro ao finalizar atendimento");
+      console.error(error);
+    }
   };
 
   return (
     <DefaultTemplate>
       <div className={styles.container}>
-        {/* Seção de Botões */}
+        {/* Botões de chamada */}
         {!atendimentoAtual && (
           <div className={styles.botoes}>
-            {["normal", "prioritario", "coordenacao"].map((tipo) => (
+            {["normal", "prioritario"].map((tipo) => (
               <div key={tipo} className={styles.botaoBox}>
-                <button onClick={() => chamarProximo(tipo)}>{tipo}</button>
+                <button onClick={() => chamarProximo(tipo)}>
+                  {tipo === "normal" ? "Normal" : "Prioritário"}
+                </button>
                 <span>{fila[tipo].length} aguardando</span>
               </div>
             ))}
           </div>
         )}
 
-        {/* Seção de Atendimento Ativo */}
+        {/* Atendimento Atual */}
         {atendimentoAtual && (
           <form
-            onSubmit={handleSubmit(finalizarAtendimento)}
+            onSubmit={(e) => {
+              e.preventDefault();
+              finalizarAtendimento();
+            }}
             className={styles.form}
           >
             <h2 className={styles.senhaDestaque}>
-              Senha: {atendimentoAtual.numero}
+              Senha: {atendimentoAtual?.senha || "Sem senha"}
             </h2>
             <button
               type="button"
               className={styles.chamarNovamente}
-              onClick={() => chamarProximo(atendimentoAtual.tipo)}
+              onClick={repetirChamada}
             >
               Chamar Novamente
             </button>
+
             <button type="submit" className={styles.finalizar}>
               Finalizar
             </button>
           </form>
         )}
 
-        {/* Seção de Atendimentos Finalizados */}
+        {/* Finalizados */}
         <div className={styles.atendimentosFinalizados}>
           <h3>Atendimentos Finalizados</h3>
           <ul>
-            {atendimentosFinalizados.map((atendimento) => (
-              <li key={atendimento.id}>
-                {atendimento.numero} - {atendimento.status}
+            {atendimentosFinalizados.map((at) => (
+              <li key={at.id}>
+                {at.senha} - {at.status}
               </li>
             ))}
           </ul>

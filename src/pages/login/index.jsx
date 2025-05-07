@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import logo from "../../assets/logo.png";
-import { useNavigate } from 'react-router-dom';
+import { UsuarioContext } from '../../provider/userContext';
 import styles from "./styles.module.scss";
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const navigate = useNavigate();
+  const { login } = useContext(UsuarioContext);
 
   const onSubmit = (data) => {
-    navigate("/painel");
-    console.log('Dados enviados:', data);
+    console.log(data)
+   login(data)
   };
 
   return (
@@ -20,12 +20,11 @@ const Login = () => {
         <div className={styles.logo}><img src={logo} alt="Logo" /></div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="usuario">Usuário</label>
+          <label htmlFor="login">Usuário</label>
           <input
-            id="usuario"
             type="text"
             className={styles.input}
-            {...register("usuario", { required: true })}
+            {...register("login", { required: true })}
           />
           {errors.usuario && (
             <span className={styles.error}>Usuário é obrigatório</span>
