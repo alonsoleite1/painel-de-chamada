@@ -58,7 +58,6 @@ export const UsuarioContextProvider = ({ children }) => {
             const { data } = await api.post("/usuario/login", formData);
             const token = data.accessToken;
             const { nome, unidade, perfil, terminal,cpf } = data.user;
-    
             setUser(data.user);
             setNome(nome);
             setUnidade(unidade);
@@ -75,6 +74,7 @@ export const UsuarioContextProvider = ({ children }) => {
                 recepcao: "/recepcao",
                 operador: "/selecao",
                 gestor: "/operador",
+                painel: "/painel",
             };
     
             if (rotas[perfil]) {

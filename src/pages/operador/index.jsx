@@ -14,6 +14,7 @@ const Operador = () => {
   const [atendimentosFinalizados, setAtendimentosFinalizados] = useState([]);
 
   const token = JSON.parse(localStorage.getItem("@token")) || "";
+
   const { user } = useContext(UsuarioContext);
 
   useEffect(() => {

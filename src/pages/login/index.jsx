@@ -10,7 +10,6 @@ const Login = () => {
   const { login } = useContext(UsuarioContext);
 
   const onSubmit = (data) => {
-    console.log(data)
    login(data)
   };
 
