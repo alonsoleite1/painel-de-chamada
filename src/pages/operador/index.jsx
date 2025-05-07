@@ -97,7 +97,8 @@ const Operador = () => {
         senha: atendimentoAtual.senha,
         setor: atendimentoAtual.setor,
         tipo: atendimentoAtual.tipo,
-      });
+        guiche: user.terminal, // Adiciona o guichê novamente
+      });      
     }
   };
 

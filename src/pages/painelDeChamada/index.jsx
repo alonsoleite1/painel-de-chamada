@@ -9,12 +9,13 @@ const Painel = () => {
 
   // Função para falar a senha
   const falarSenha = (senha, setor, tipo, guiche = null) => {
-    console.log("🔈 Chamando senha com dados:", { senha, setor, tipo, guiche });
+   
     const guicheFormatado = guiche?.replace("guiche", "Guichê ");
     const frase = guiche
       ? `Senha número ${senha}, ${tipo}, no setor ${setor}, ${guicheFormatado}`
       : `Senha número ${senha}, ${tipo}, setor ${setor}`;
-  
+      console.log("🗣️ Frase a ser falada:", frase);
+
     const utterance = new SpeechSynthesisUtterance(frase);
     utterance.lang = "pt-BR";
   
