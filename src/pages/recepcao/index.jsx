@@ -18,23 +18,23 @@ const Recepcao = () => {
 
     const gerarSenha = async (tipoAtendimento) => {
         setTipo(tipoAtendimento);
-    
+
         try {
             const { data } = await api.get("/painel", {
                 headers: { Authorization: `Bearer ${token}` }
             });
-    
+
             // Agora considera todas as senhas, não importa o tipo
             const senhasOrdenadas = data.sort((a, b) => b.senha - a.senha);
             const ultimaSenha = senhasOrdenadas[0]?.senha || 0;
-    
+
             const novaSenha = ultimaSenha + 1;
             setNumero(novaSenha);
         } catch (error) {
             toast.error("Erro ao gerar senha");
             console.error(error);
         }
-    };    
+    };
 
     const onSubmit = async (formData) => {
         if (!tipo || !numero) return toast.warning("Escolha o tipo de atendimento primeiro.");
@@ -43,7 +43,7 @@ const Recepcao = () => {
             senha: numero,
             tipo,
             status: "aguardando",
-            motivo: formData.motivo,
+            motivo: formData.motivo.toUpperCase(),
             setor: formData.setor,
         };
 
@@ -67,10 +67,10 @@ const Recepcao = () => {
             <div className={styles.container}>
                 <div className={styles.buttons}>
                     <button onClick={() => gerarSenha("normal")} className={styles.normal}>
-                        Atendimento Normal
+                        NORMAL
                     </button>
                     <button onClick={() => gerarSenha("prioritario")} className={styles.prioritario}>
-                        Atendimento Prioritário
+                        PRIORIDADE
                     </button>
                 </div>
 
@@ -87,14 +87,14 @@ const Recepcao = () => {
 
                             <div>
                                 <label>Motivo do Atendimento:</label>
-                                <select {...register("motivo", { required: true })}>
-                                    <option value="">Selecione</option>
-                                    {motivos.map((motivo, idx) => (
-                                        <option key={idx} value={motivo}>{motivo}</option>
-                                    ))}
-                                </select>
-                                {errors.motivo && <span className={styles.error}>Selecione um motivo</span>}
+                                <textarea
+                                    {...register("motivo", { required: true })}
+                                    rows={3}
+                                    placeholder="Descreva o motivo do atendimento"
+                                />
+                                {errors.motivo && <span className={styles.error}>Informe o motivo do atendimento</span>}
                             </div>
+
 
                             <div>
                                 <label>Setor:</label>

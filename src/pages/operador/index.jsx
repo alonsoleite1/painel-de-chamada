@@ -18,32 +18,50 @@ const Operador = () => {
   const { user } = useContext(UsuarioContext);
 
   useEffect(() => {
+    if (!user || !user.setor) return; // Evita erro se user ainda não estiver carregado
+  
+    const normalize = (str) =>
+      str?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  
     const buscarAtendimentos = async () => {
       try {
+        // Buscando os atendimentos aguardando
         const { data } = await api.get("/painel", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        const aguardando = data.filter((item) => item.status === "aguardando");
-        const filaNormal = aguardando.filter((item) => item.tipo === "normal");
-        const filaPrioritario = aguardando.filter(
-          (item) => item.tipo === "prioritario"
+  
+        const aguardando = data.filter(
+          (item) =>
+            item.status === "aguardando" &&
+            normalize(item.setor) === normalize(user.setor)
         );
-
+  
+        const filaNormal = aguardando.filter((item) => item.tipo === "normal");
+        const filaPrioritario = aguardando.filter((item) => item.tipo === "prioritario");
+  
         setFila({ normal: filaNormal, prioritario: filaPrioritario });
+  
+        // Buscando os atendimentos finalizados
+        const finalizados = data.filter(
+          (item) =>
+            item.status === "encerrado" &&
+            normalize(item.setor) === normalize(user.setor)
+        );
+  
+        setAtendimentosFinalizados(finalizados); // Atualizando o estado dos finalizados
       } catch (error) {
         toast.error("Erro ao buscar atendimentos");
         console.error(error);
       }
     };
-
+  
     buscarAtendimentos();
-  }, [token]);
+  }, [token, user]); 
 
   const chamarProximo = async (tipo) => {
     const proximo = fila[tipo][0];
     if (!proximo) return;
-  
+
     try {
       await api.patch(
         `/painel/${proximo.id}`,
@@ -52,12 +70,12 @@ const Operador = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-  
+
       setAtendimentoAtual({ ...proximo, tipo });
-  
+
       // Emite um evento para o painel chamar a senha
       console.log("Emitindo evento para o painel:", proximo.senha, proximo.setor);
-      
+
       // Verifica se o operador está vinculado a um guichê
       if (user.terminal) {
         // Se houver um guichê vinculado, emite a chamada para esse guichê
@@ -76,7 +94,7 @@ const Operador = () => {
           tipo,
         });
       }
-  
+
       setFila((prev) => ({
         ...prev,
         [tipo]: prev[tipo].slice(1),
@@ -87,7 +105,6 @@ const Operador = () => {
       console.error(error);
     }
   };
-  
 
   const repetirChamada = () => {
     if (atendimentoAtual) {
@@ -98,7 +115,7 @@ const Operador = () => {
         setor: atendimentoAtual.setor,
         tipo: atendimentoAtual.tipo,
         guiche: user.terminal, // Adiciona o guichê novamente
-      });      
+      });
     }
   };
 
@@ -131,9 +148,16 @@ const Operador = () => {
             {["normal", "prioritario"].map((tipo) => (
               <div key={tipo} className={styles.botaoBox}>
                 <button onClick={() => chamarProximo(tipo)}>
-                  {tipo === "normal" ? "Normal" : "Prioritário"}
+                  {tipo === "normal" ? "NORMAL" : "PRIORIDADE"}
                 </button>
-                <span>{fila[tipo].length} aguardando</span>
+                <ul className={styles.lista}>
+                  {fila[tipo].map((item) => (
+                    <li key={item.id}>
+                      <strong>SENHA: 0{item.senha}</strong>
+                      <span>{item.motivo}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
@@ -167,14 +191,7 @@ const Operador = () => {
 
         {/* Finalizados */}
         <div className={styles.atendimentosFinalizados}>
-          <h3>Atendimentos Finalizados</h3>
-          <ul>
-            {atendimentosFinalizados.map((at) => (
-              <li key={at.id}>
-                {at.senha} - {at.status}
-              </li>
-            ))}
-          </ul>
+          <h3>TOTAL DE ATENDIMENTOS - <span> {atendimentosFinalizados.length}</span></h3>
         </div>
       </div>
     </DefaultTemplate>
