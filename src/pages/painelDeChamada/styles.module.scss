@@ -1,0 +1,144 @@
+@use '../../styles/globals.scss' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background-color: $color-gray-light;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background-color: $color-gray-light;
+}
+
+.headerArea {
+  flex: 0 0 20%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.2rem; // você pode manter isso como espaço do topo
+}
+
+.normal,
+.prioritario {
+  flex: 1; // 👈 garante 50% da altura da headerArea para cada
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5rem;
+  font-size: 3.5rem;
+  font-weight: 600;
+  color: $color-white;
+
+  p {
+    margin: 0;
+  }
+
+  span {
+    font-size: 5.5rem;
+    font-weight: 700;
+  }
+}
+
+
+.normal {
+  background-color: $color-blue;
+}
+
+.prioritario {
+  background-color: $color-green-dark;
+}
+
+.slideArea {
+  flex: 1;
+  background: linear-gradient(
+  to bottom right,
+  rgba(0, 71, 171, 0.8),
+  rgba(255, 215, 0, 0.7),
+  rgba(34, 139, 34, 0.7),
+  rgba(208, 0, 0, 0.7),
+  rgba(255, 255, 255, 0.9)
+);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.slide {
+  width: 100%;
+  height: 100%;
+  padding: 1rem; // Espaço interno para evitar que o conteúdo fique colado
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.slide img,
+.slide video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  background-color: $color-gray-light;
+  animation: fadeInSlide 0.8s ease-in-out;
+  border-radius: 0.5rem;
+}
+
+
+/* Animações */
+@keyframes destaqueSenha {
+  0% {
+    transform: scale(1);
+    background-color: lighten($color-green, 10%);
+  }
+  50% {
+    transform: scale(1.1);
+    background-color: darken($color-green, 10%);
+  }
+  100% {
+    transform: scale(1);
+    background-color: $color-green;
+  }
+}
+
+@keyframes destaqueSenhaNormal {
+  0% {
+    transform: scale(1);
+    background-color: lighten($color-blue-dark, 10%);
+  }
+  50% {
+    transform: scale(1.1);
+    background-color: darken($color-blue-dark, 10%);
+  }
+  100% {
+    transform: scale(1);
+    background-color: $color-blue-dark;
+  }
+}
+
+.destaqueNormal {
+  animation: destaqueSenhaNormal 0.6s ease;
+}
+
+.destaquePrioritario {
+  animation: destaqueSenha 0.6s ease;
+}
+@keyframes fadeInSlide {
+  0% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

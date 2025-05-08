@@ -1,0 +1,60 @@
+@use '../../styles/globals.scss' as *;
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+  padding: 0 1rem;
+  background-color: rgba($color-white, 0.85);  // Branco com leve transparência
+  color: $color-black;
+}
+
+.logoImg {
+  height: 2.5rem;
+  width: auto;
+}
+
+.infoBox {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.userDetail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+
+  svg {
+    color: $color-green-dark;
+  }
+
+  p {
+    margin: 0;
+    color: $color-blue;
+  }
+}
+
+.logoutButton {
+  background-color: $color-red;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  color: $color-white;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: $color-red-dark;
+  }
+}
