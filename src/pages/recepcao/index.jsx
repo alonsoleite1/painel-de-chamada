@@ -41,6 +41,7 @@ const Recepcao = () => {
 
         const payload = {
             senha: numero,
+            nome: formData.nome,
             tipo,
             status: "aguardando",
             motivo: formData.motivo.toUpperCase(),
@@ -83,6 +84,15 @@ const Recepcao = () => {
                             <div>
                                 <label>Número da Senha:</label>
                                 <input type="text" value={numero} readOnly className={styles.numeroSenha} />
+                            </div>
+                            <div>
+                                <label>Nome:</label>
+                                <input type="text" 
+                                {...register("nome",{
+                                    required:true
+                                })}
+                                />
+                                {errors.nome && <span className={styles.error}>Informe o nome</span>}
                             </div>
 
                             <div>

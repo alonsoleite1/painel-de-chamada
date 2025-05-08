@@ -57,23 +57,24 @@ const Painel = () => {
   }, []);
 
   // Função para falar a senha
-  const falarSenha = (senha, setor, tipo, guiche = null) => {
-    const guicheFormatado = guiche?.replace("guiche", "Guichê ");
-    const frase = guiche
-      ? `Senha número ${senha}, ${tipo}, no setor ${setor}, ${guicheFormatado}`
-      : `Senha número ${senha}, ${tipo}, setor ${setor}`;
+  const falarSenha = ({ senha, nome, setor, tipo, guiche = null }) => {
+    const guicheFormatado = guiche ? `Guichê ${guiche.replace("guiche", "")}` : "";
+    const frase = `${nome}, senha de número ${senha}, ${tipo}, no setor ${setor}${guicheFormatado}.`;
+  
     console.log("🗣️ Frase a ser falada:", frase);
-
+  
     const utterance = new SpeechSynthesisUtterance(frase);
     utterance.lang = "pt-BR";
-
+  
     if (vozRef.current) {
       utterance.voice = vozRef.current;
     }
-
-    speechSynthesis.cancel(); // evita sobreposição de falas
+  
+    speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   };
+  
+  
 
   // Requisição ao WebSocket
   useEffect(() => {
@@ -91,7 +92,8 @@ const Painel = () => {
     socket.on("chamar-senha", (data) => {
       console.log("🎯 Evento chamar-senha recebido:", data);
 
-      falarSenha(data.senha, data.setor, data.tipo, data.guiche);
+      falarSenha(data);
+
       entrarEmTelaCheia(); // força tela cheia ao chamar
 
       if (data.tipo === "normal") {

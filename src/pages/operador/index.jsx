@@ -82,6 +82,7 @@ const Operador = () => {
         console.log("Emitindo evento para o guichê:", user.terminal);
         socket.emit("chamar-senha", {
           senha: proximo.senha,
+          nome:proximo.nome,
           setor: proximo.setor,
           tipo,
           guiche: user.terminal, // Envia o guichê vinculado
@@ -89,6 +90,7 @@ const Operador = () => {
       } else {
         // Caso contrário, chama a senha para o painel sem guichê
         socket.emit("chamar-senha", {
+          nome:proximo.nome,
           senha: proximo.senha,
           setor: proximo.setor,
           tipo,
@@ -111,6 +113,7 @@ const Operador = () => {
       // Emite um evento para o painel repetir a chamada da senha
       console.log("Repetindo chamada da senha:", atendimentoAtual.senha);
       socket.emit("chamar-senha", {
+        nome:atendimentoAtual.nome,
         senha: atendimentoAtual.senha,
         setor: atendimentoAtual.setor,
         tipo: atendimentoAtual.tipo,
