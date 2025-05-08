@@ -28,14 +28,16 @@ export const UsuarioContextProvider = ({ children }) => {
                             Authorization: `Bearer ${token}`
                         }
                     });
+                    console.log(data)
                     setUser(data);
                 } catch (error) {
                     console.error("Erro ao carregar usuário:", error);
                     localStorage.removeItem("@token");
                     localStorage.removeItem("@nome");
                     localStorage.removeItem("@unidade");
+                    localStorage.removeItem("@cpf");
                     localStorage.removeItem("@perfil");
-                    localStorage.removeItem("@unidadeId");
+                    localStorage.removeItem("@terminal");
                 }
             }
             setLoading(false);

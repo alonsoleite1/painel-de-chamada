@@ -3,6 +3,28 @@ import styles from "./styles.module.scss";
 import io from "socket.io-client";
 
 const Painel = () => {
+  const [destaqueNormal, setDestaqueNormal] = useState(false);
+const [destaquePrioritario, setDestaquePrioritario] = useState(false);
+
+const aplicarDestaque = (tipo) => {
+  if (tipo === "normal") {
+    setDestaqueNormal(true);
+    setTimeout(() => setDestaqueNormal(false), 600);
+  } else if (tipo === "prioritario") {
+    setDestaquePrioritario(true);
+    setTimeout(() => setDestaquePrioritario(false), 600);
+  }
+};
+
+const entrarEmTelaCheia = () => {
+  const elemento = document.documentElement;
+  if (elemento.requestFullscreen) {
+    elemento.requestFullscreen().catch((err) => {
+      console.error("Erro ao entrar em tela cheia:", err);
+    });
+  }
+};
+
   const [ultimaSenhaNormal, setUltimaSenhaNormal] = useState(
     localStorage.getItem("ultimaSenhaNormal") || null
   );
@@ -63,17 +85,21 @@ const Painel = () => {
 
     socket.on("chamar-senha", (data) => {
       console.log("🎯 Evento chamar-senha recebido:", data);
-
+    
       falarSenha(data.senha, data.setor, data.tipo, data.guiche);
-
+      entrarEmTelaCheia(); // força tela cheia ao chamar
+    
       if (data.tipo === "normal") {
         setUltimaSenhaNormal(data.senha);
         localStorage.setItem("ultimaSenhaNormal", data.senha);
+        aplicarDestaque("normal");
       } else if (data.tipo === "prioritario") {
         setUltimaSenhaPrioritario(data.senha);
         localStorage.setItem("ultimaSenhaPrioritario", data.senha);
+        aplicarDestaque("prioritario");
       }
     });
+    
 
     return () => {
       socket.disconnect();
@@ -83,11 +109,13 @@ const Painel = () => {
   return (
     <div className={styles.container}>
       <div className={styles.headerArea}>
-        <div className={styles.normal}>
+      <div className={`${styles.normal} ${destaqueNormal ? styles.destaqueNormal : ""}`}>
+
           <p>ATENDIMENTO NORMAL</p>
           <span>{ultimaSenhaNormal ? `Senha: 0${ultimaSenhaNormal}` : "Nenhuma chamada"}</span>
         </div>
-        <div className={styles.prioritario}>
+        <div className={`${styles.prioritario} ${destaquePrioritario ? styles.destaquePrioritario : ""}`}>
+
           <p>ATENDIMENTO PRIORITÁRIO</p>
           <span>{ultimaSenhaPrioritario ? `Senha: 0${ultimaSenhaPrioritario}` : "Nenhuma chamada"}</span>
         </div>

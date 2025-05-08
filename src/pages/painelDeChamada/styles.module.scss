@@ -49,3 +49,41 @@
   font-size: 1.5rem;
   color: $color-gray-dark;
 }
+
+@keyframes destaqueSenha {
+  0% {
+    transform: scale(1);
+    background-color: lighten($color-green, 10%);
+  }
+  50% {
+    transform: scale(1.1);
+    background-color: darken($color-green, 10%);
+  }
+  100% {
+    transform: scale(1);
+    background-color: $color-green;
+  }
+}
+
+@keyframes destaqueSenhaNormal {
+  0% {
+    transform: scale(1);
+    background-color: lighten($color-blue-dark, 10%);
+  }
+  50% {
+    transform: scale(1.1);
+    background-color: darken($color-blue-dark, 10%);
+  }
+  100% {
+    transform: scale(1);
+    background-color: $color-blue-dark;
+  }
+}
+
+.destaqueNormal {
+  animation: destaqueSenhaNormal 0.6s ease;
+}
+
+.destaquePrioritario {
+  animation: destaqueSenha 0.6s ease;
+}
