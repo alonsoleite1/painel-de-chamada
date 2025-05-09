@@ -16,7 +16,7 @@ export const UsuarioContextProvider = ({ children }) => {
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem("@token"));
-        console.log(token)
+
         const loadUser = async () => {
             if (token) {
                 
@@ -26,7 +26,7 @@ export const UsuarioContextProvider = ({ children }) => {
                             Authorization: `Bearer ${token}`
                         }
                     });
-                // console.log(data)
+
                     setUser(data);
                 } catch (error) {
                     console.error("Erro ao carregar usuário:", error);

@@ -73,13 +73,11 @@ const Painel = () => {
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   };
-  
-  
 
   // Requisição ao WebSocket
   useEffect(() => {
     const socket = io("http://45.70.177.64:3396");
-
+   // const socket = io("http://localhost:5002");
     socket.on("connect", () => {
       console.log("✅ Conectado ao servidor WebSocket com ID:", socket.id);
       socket.emit("teste-conexao", { mensagem: "Painel conectado!" });

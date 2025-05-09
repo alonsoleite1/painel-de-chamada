@@ -2,11 +2,12 @@ import { useState, useEffect, useContext } from "react";
 import DefaultTemplate from "../../components/DefaultTemplate";
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import io from "socket.io-client"; // Importa a biblioteca do socket
+import io from "socket.io-client"; 
 import styles from "./styles.module.scss";
 import { UsuarioContext } from "../../provider/userContext";
 
 const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
+//const socket = io("http://localhost:5002"); // Conecta-se ao servidor WebSocket
 
 const Operador = () => {
   const [fila, setFila] = useState({ normal: [], prioritario: [] });
@@ -17,46 +18,45 @@ const Operador = () => {
 
   const { user } = useContext(UsuarioContext);
 
+  const normalize = (str) =>
+    str?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  
+  const buscarAtendimentos = async () => {
+    if (!user || !user.setor) return;
+  
+    try {
+      const { data } = await api.get("/painel", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      const aguardando = data.filter(
+        (item) =>
+          item.status === "aguardando" &&
+          normalize(item.setor) === normalize(user.setor)
+      );
+  
+      const filaNormal = aguardando.filter((item) => item.tipo === "normal");
+      const filaPrioritario = aguardando.filter((item) => item.tipo === "prioritario");
+  
+      setFila({ normal: filaNormal, prioritario: filaPrioritario });
+  
+      const finalizados = data.filter(
+        (item) =>
+          item.status === "encerrado" &&
+          normalize(item.setor) === normalize(user.setor)
+      );
+  
+      setAtendimentosFinalizados(finalizados);
+    } catch (error) {
+      toast.error("Erro ao buscar atendimentos");
+      console.error(error);
+    }
+  };
+  
   useEffect(() => {
-    if (!user || !user.setor) return; // Evita erro se user ainda não estiver carregado
-
-    const normalize = (str) =>
-      str?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-    const buscarAtendimentos = async () => {
-      try {
-        // Buscando os atendimentos aguardando
-        const { data } = await api.get("/painel", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        const aguardando = data.filter(
-          (item) =>
-            item.status === "aguardando" &&
-            normalize(item.setor) === normalize(user.setor)
-        );
-
-        const filaNormal = aguardando.filter((item) => item.tipo === "normal");
-        const filaPrioritario = aguardando.filter((item) => item.tipo === "prioritario");
-
-        setFila({ normal: filaNormal, prioritario: filaPrioritario });
-
-        // Buscando os atendimentos finalizados
-        const finalizados = data.filter(
-          (item) =>
-            item.status === "encerrado" &&
-            normalize(item.setor) === normalize(user.setor)
-        );
-
-        setAtendimentosFinalizados(finalizados); // Atualizando o estado dos finalizados
-      } catch (error) {
-        toast.error("Erro ao buscar atendimentos");
-        console.error(error);
-      }
-    };
-
     buscarAtendimentos();
   }, [token, user]);
+   
 
   const chamarProximo = async (tipo) => {
     const proximo = fila[tipo][0];
@@ -145,27 +145,35 @@ const Operador = () => {
   return (
     <DefaultTemplate>
       <div className={styles.container}>
-        {/* Botões de chamada */}
-        {!atendimentoAtual && (
-          <div className={styles.botoes}>
-            {["normal", "prioritario"].map((tipo) => (
-              <div key={tipo} className={styles.botaoBox}>
-                <button onClick={() => chamarProximo(tipo)}>
-                  {tipo === "normal" ? "NORMAL" : "PRIORIDADE"}
-                </button>
-                <ul className={styles.lista}>
-                  {fila[tipo].map((item) => (
-                    <li key={item.id}>
-                      <strong>SENHA: 0{item.senha}</strong>
-                      <span className={styles.nome}>{item.nome.toUpperCase()}</span>
-                      <span className={styles.motivo}>{item.motivo}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      {!atendimentoAtual && (
+  <>
+    <div className={styles.atualizarBox}>
+      <button className={styles.btnAtualizar} onClick={buscarAtendimentos}>
+        🔄 Atualizar Lista
+      </button>
+    </div>
+
+    <div className={styles.botoes}>
+      {["normal", "prioritario"].map((tipo) => (
+        <div key={tipo} className={styles.botaoBox}>
+          <button onClick={() => chamarProximo(tipo)}>
+            {tipo === "normal" ? "NORMAL" : "PRIORIDADE"}
+          </button>
+          <ul className={styles.lista}>
+            {fila[tipo].map((item) => (
+              <li key={item.id}>
+                <strong>SENHA: 0{item.senha}</strong>
+                <span className={styles.nome}>{item.nome.toUpperCase()}</span>
+                <span className={styles.motivo}>{item.motivo}</span>
+              </li>
             ))}
-          </div>
-        )}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </>
+)}
+
 
         {/* Atendimento Atual */}
         {atendimentoAtual && (

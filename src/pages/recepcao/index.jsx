@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useForm } from "react-hook-form";
 import DefaultTemplate from "../../components/DefaultTemplate";
 import styles from "./styles.module.scss";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 
-const motivos = ["Consulta", "Retorno", "Encaminhamento", "Coordenador"];
-const setores = ["Regulação", "Atenção Primária", "Atenção Secundária", "Odontologia", "Epidemiologia"];
+const setores = ["Regulação", "Guilherme"];
 
 const Recepcao = () => {
     const [tipo, setTipo] = useState(null);
