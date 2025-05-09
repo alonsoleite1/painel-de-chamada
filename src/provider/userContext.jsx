@@ -16,28 +16,22 @@ export const UsuarioContextProvider = ({ children }) => {
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem("@token"));
-        setNome(JSON.parse(localStorage.getItem("@nome")));
-        setUnidade(JSON.parse(localStorage.getItem("@unidade")));
-        setPerfil(JSON.parse(localStorage.getItem("@perfil")));
-
+        console.log(token)
         const loadUser = async () => {
             if (token) {
+                
                 try {
                     const { data } = await api.get('/usuario/autentificacao/login', {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
                     });
-                    console.log(data)
+                // console.log(data)
                     setUser(data);
                 } catch (error) {
                     console.error("Erro ao carregar usuário:", error);
                     localStorage.removeItem("@token");
-                    localStorage.removeItem("@nome");
-                    localStorage.removeItem("@unidade");
-                    localStorage.removeItem("@cpf");
-                    localStorage.removeItem("@perfil");
-                    localStorage.removeItem("@terminal");
+                    localStorage.removeItem("@cpf");       
                 }
             }
             setLoading(false);
@@ -59,7 +53,7 @@ export const UsuarioContextProvider = ({ children }) => {
         try {
             const { data } = await api.post("/usuario/login", formData);
             const token = data.accessToken;
-            const { nome, unidade, perfil, terminal,cpf } = data.user;
+            const { nome, unidade, perfil,cpf } = data.user;
             setUser(data.user);
             setNome(nome);
             setUnidade(unidade);
@@ -67,10 +61,6 @@ export const UsuarioContextProvider = ({ children }) => {
     
             localStorage.setItem("@token", JSON.stringify(token));
             localStorage.setItem("@cpf", JSON.stringify(cpf));
-            localStorage.setItem("@nome", JSON.stringify(nome));
-            localStorage.setItem("@unidade", JSON.stringify(unidade));
-            localStorage.setItem("@perfil", JSON.stringify(perfil));
-            localStorage.setItem("@terminal", JSON.stringify(terminal));
     
             const rotas = {
                 recepcao: "/recepcao",
@@ -89,17 +79,12 @@ export const UsuarioContextProvider = ({ children }) => {
         } catch (error) {
             toast.error("Login ou senha inválidos!");
         }
-    };
-    
+    }; 
 
     const logout = () => {
         navigate("");
         setUser(null);
         localStorage.removeItem("@token");
-        localStorage.removeItem("@nome");
-        localStorage.removeItem("@unidade");
-        localStorage.removeItem("@perfil");
-        localStorage.removeItem("@terminal");
         localStorage.removeItem("@cpf");
     };
 

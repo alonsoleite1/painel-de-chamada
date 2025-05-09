@@ -78,7 +78,7 @@ const Painel = () => {
 
   // Requisição ao WebSocket
   useEffect(() => {
-    const socket = io("http://localhost:3000");
+    const socket = io("http://45.70.177.64:3396");
 
     socket.on("connect", () => {
       console.log("✅ Conectado ao servidor WebSocket com ID:", socket.id);
@@ -110,7 +110,7 @@ const Painel = () => {
     // Carregar os slides (imagens ou vídeos)
     const carregarSlides = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/slides"); // <- Aqui está a mudança
+        const response = await fetch("http://45.70.177.64:3396/api/slides"); // <- Aqui está a mudança
         const slideFiles = await response.json();
         setSlides(slideFiles); // lista de arquivos: ['imagem1.jpg', 'video1.mp4', ...]
       } catch (err) {
@@ -132,7 +132,7 @@ const Painel = () => {
   };
 
   useEffect(() => {
-    const intervalo = setInterval(avancarSlide, 5000); // muda a cada 10 segundos
+    const intervalo = setInterval(avancarSlide, 15000); // muda a cada 10 segundos
     return () => clearInterval(intervalo);
   }, [slides]);
 
@@ -157,14 +157,14 @@ const Painel = () => {
             {slides[slideAtual].endsWith(".mp4") ? (
               <video controls>
                 <source
-                  src={`http://localhost:3000/slides/${slides[slideAtual]}`}
+                  src={`http://45.70.177.64:3396/slides/${slides[slideAtual]}`}
                   type="video/mp4"
                 />
                 Seu navegador não suporta o vídeo.
               </video>
             ) : (
               <img
-                src={`http://localhost:3000/slides/${slides[slideAtual]}`}
+                src={`http://45.70.177.64:3396/slides/${slides[slideAtual]}`}
                 alt={`Slide ${slideAtual + 1}`}
               />
             )}

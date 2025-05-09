@@ -6,7 +6,7 @@ import io from "socket.io-client"; // Importa a biblioteca do socket
 import styles from "./styles.module.scss";
 import { UsuarioContext } from "../../provider/userContext";
 
-const socket = io("http://localhost:3000"); // Conecta-se ao servidor WebSocket
+const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
 
 const Operador = () => {
   const [fila, setFila] = useState({ normal: [], prioritario: [] });
@@ -19,44 +19,44 @@ const Operador = () => {
 
   useEffect(() => {
     if (!user || !user.setor) return; // Evita erro se user ainda não estiver carregado
-  
+
     const normalize = (str) =>
       str?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  
+
     const buscarAtendimentos = async () => {
       try {
         // Buscando os atendimentos aguardando
         const { data } = await api.get("/painel", {
           headers: { Authorization: `Bearer ${token}` },
         });
-  
+
         const aguardando = data.filter(
           (item) =>
             item.status === "aguardando" &&
             normalize(item.setor) === normalize(user.setor)
         );
-  
+
         const filaNormal = aguardando.filter((item) => item.tipo === "normal");
         const filaPrioritario = aguardando.filter((item) => item.tipo === "prioritario");
-  
+
         setFila({ normal: filaNormal, prioritario: filaPrioritario });
-  
+
         // Buscando os atendimentos finalizados
         const finalizados = data.filter(
           (item) =>
             item.status === "encerrado" &&
             normalize(item.setor) === normalize(user.setor)
         );
-  
+
         setAtendimentosFinalizados(finalizados); // Atualizando o estado dos finalizados
       } catch (error) {
         toast.error("Erro ao buscar atendimentos");
         console.error(error);
       }
     };
-  
+
     buscarAtendimentos();
-  }, [token, user]); 
+  }, [token, user]);
 
   const chamarProximo = async (tipo) => {
     const proximo = fila[tipo][0];
@@ -82,7 +82,7 @@ const Operador = () => {
         console.log("Emitindo evento para o guichê:", user.terminal);
         socket.emit("chamar-senha", {
           senha: proximo.senha,
-          nome:proximo.nome,
+          nome: proximo.nome,
           setor: proximo.setor,
           tipo,
           guiche: user.terminal, // Envia o guichê vinculado
@@ -90,7 +90,7 @@ const Operador = () => {
       } else {
         // Caso contrário, chama a senha para o painel sem guichê
         socket.emit("chamar-senha", {
-          nome:proximo.nome,
+          nome: proximo.nome,
           senha: proximo.senha,
           setor: proximo.setor,
           tipo,
@@ -113,7 +113,7 @@ const Operador = () => {
       // Emite um evento para o painel repetir a chamada da senha
       console.log("Repetindo chamada da senha:", atendimentoAtual.senha);
       socket.emit("chamar-senha", {
-        nome:atendimentoAtual.nome,
+        nome: atendimentoAtual.nome,
         senha: atendimentoAtual.senha,
         setor: atendimentoAtual.setor,
         tipo: atendimentoAtual.tipo,
@@ -157,7 +157,8 @@ const Operador = () => {
                   {fila[tipo].map((item) => (
                     <li key={item.id}>
                       <strong>SENHA: 0{item.senha}</strong>
-                      <span>{item.motivo}</span>
+                      <span className={styles.nome}>{item.nome.toUpperCase()}</span>
+                      <span className={styles.motivo}>{item.motivo}</span>
                     </li>
                   ))}
                 </ul>

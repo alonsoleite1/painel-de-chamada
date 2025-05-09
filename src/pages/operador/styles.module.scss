@@ -166,11 +166,18 @@
       }
   
       /* Destaque apenas para a palavra "MOTIVO" */
-      span:before {
-        content: "MOTIVO: "; /* Adiciona a palavra "MOTIVO" antes do texto */
+      span.motivo::before {
+        content: "MOTIVO: ";
         font-weight: bold;
-        color: $color-blue-dark; /* Cor de destaque */
+        color: $color-blue-dark;
       }
+      
+      span.nome::before {
+        content: "NOME: ";
+        font-weight: bold;
+        color: $color-blue-dark;
+      }
+      
     }
   }
   
