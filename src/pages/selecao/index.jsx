@@ -2,34 +2,37 @@ import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
-import styles from './styles.module.scss';
 import { useNavigate } from 'react-router-dom';
+import { UsuarioContext } from '../../provider/userContext';
+import styles from './styles.module.scss';
 
 const Selecao = () => {
-  const {register,handleSubmit, formState: { errors },} = useForm();
+  const { register, handleSubmit, formState: { errors }, } = useForm();
 
+  const { setUser } = useContext(UsuarioContext);
 
   const navigate = useNavigate();
 
-  const onSubmit = async(data) => {
-    const token = JSON.parse(localStorage.getItem("@token"));   
-    const cpf = JSON.parse(localStorage.getItem("@cpf")); 
-    
-    const payload = {...data, cpf};
+  const onSubmit = async (data) => {
+    const token = JSON.parse(localStorage.getItem("@token"));
+    const cpf = JSON.parse(localStorage.getItem("@cpf"));
+
+    const payload = { ...data, cpf };
 
     try {
-        await api.patch(`/usuario/${cpf}`, payload, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        toast.success("Usuário Atualizado!");
-        navigate("/operador");
+      const { data } = await api.patch(`/usuario/${cpf}`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setUser(data);
+      toast.success("Usuário Atualizado!");
+      navigate("/operador");
     } catch (error) {
-        toast.error(error.response.data.message);
+      toast.error(error.response.data.message);
     }
   };
-  
+
 
   return (
     <div className={styles.container}>
