@@ -1,0 +1,63 @@
+@use "../../../styles/globals.scss" as *;
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.formBusca {
+  display: flex;
+  flex-direction: column;
+  background-color: $color-white;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba($color-black, 0.05);
+  border: 1px solid $color-gray-light;
+  width: 100%;
+  max-width: 400px;
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: $color-gray-dark;
+}
+
+.inputBusca {
+  padding: 0.5rem 1rem;
+  border: 1px solid $color-gray;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: $color-gray-dark;
+  margin-bottom: 0.5rem;
+
+  &:focus {
+    outline: none;
+    border-color: $color-blue;
+    box-shadow: 0 0 0 2px rgba($color-blue, 0.2);
+  }
+}
+
+.errorBusca {
+  color: $color-red;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.buttonSearch {
+  background-color: $color-blue;
+  color: $color-white;
+  border: none;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $color-blue-dark;
+  }
+}

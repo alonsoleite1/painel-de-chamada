@@ -32,7 +32,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 5rem;
-  font-size: 3.5rem;
+  font-size: clamp(2.5rem, 4vw, 4rem);
   font-weight: 600;
   color: $color-white;
 
@@ -41,7 +41,7 @@
   }
 
   span {
-    font-size: 5.5rem;
+     font-size: clamp(4rem, 6vw, 6rem);
     font-weight: 700;
   }
 }
@@ -141,4 +141,71 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 15, 15, 0.9);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeInOverlay 0.5s ease forwards;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.overlayContent {
+  text-align: center;
+  color: $color-white;
+  animation: zoomIn 0.4s ease forwards;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.overlayTipo {
+  font-size: 5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: $color-yellow;
+}
+
+.overlaySenha {
+  font-size: 7rem;
+  font-weight: 900;
+  color: $color-red;
+  margin-bottom: 1rem;
+}
+
+.overlayNome {
+  font-size: 5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.overlaySetor {
+  font-size: 5rem;
+  font-style: italic;
 }

@@ -5,7 +5,7 @@ import styles from "./styles.module.scss";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 
-const setores = ["Regulação", "Guilherme"];
+const setores = ["Regulação", "Regulador"];
 
 const Recepcao = () => {
     const [tipo, setTipo] = useState(null);

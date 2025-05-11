@@ -7,6 +7,8 @@ const Painel = () => {
   const [destaquePrioritario, setDestaquePrioritario] = useState(false);
   const [slides, setSlides] = useState([]);
   const [slideAtual, setSlideAtual] = useState(0);
+  const [overlay, setOverlay] = useState(null);
+
 
   // Função para aplicar destaque no tipo de atendimento
   const aplicarDestaque = (tipo) => {
@@ -60,16 +62,16 @@ const Painel = () => {
   const falarSenha = ({ senha, nome, setor, tipo, guiche = null }) => {
     const guicheFormatado = guiche ? `Guichê ${guiche.replace("guiche", "")}` : "";
     const frase = `${nome}, senha de número ${senha}, ${tipo}, no setor ${setor}${guicheFormatado}.`;
-  
+
     console.log("🗣️ Frase a ser falada:", frase);
-  
+
     const utterance = new SpeechSynthesisUtterance(frase);
     utterance.lang = "pt-BR";
-  
+
     if (vozRef.current) {
       utterance.voice = vozRef.current;
     }
-  
+
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   };
@@ -77,7 +79,7 @@ const Painel = () => {
   // Requisição ao WebSocket
   useEffect(() => {
     const socket = io("http://45.70.177.64:3396");
-   // const socket = io("http://localhost:5002");
+    // const socket = io("http://localhost:5002");
     socket.on("connect", () => {
       console.log("✅ Conectado ao servidor WebSocket com ID:", socket.id);
       socket.emit("teste-conexao", { mensagem: "Painel conectado!" });
@@ -91,6 +93,16 @@ const Painel = () => {
       console.log("🎯 Evento chamar-senha recebido:", data);
 
       falarSenha(data);
+
+      setOverlay({
+        senha: data.senha,
+        nome: data.nome,
+        setor: data.setor,
+        tipo: data.tipo,
+        guiche: data.guiche,
+      });
+
+      setTimeout(() => setOverlay(null), 10000); // some após 10s
 
       entrarEmTelaCheia(); // força tela cheia ao chamar
 
@@ -116,7 +128,6 @@ const Painel = () => {
       }
     };
 
-
     carregarSlides();
 
     return () => {
@@ -124,13 +135,15 @@ const Painel = () => {
     };
   }, []);
 
+  
+
   // Função para avançar o slide
   const avancarSlide = () => {
     setSlideAtual((prev) => (prev + 1) % slides.length);
   };
 
   useEffect(() => {
-    const intervalo = setInterval(avancarSlide, 15000); // muda a cada 10 segundos
+    const intervalo = setInterval(avancarSlide, 30000); // muda a cada 30 segundos
     return () => clearInterval(intervalo);
   }, [slides]);
 
@@ -153,13 +166,20 @@ const Painel = () => {
         {slides.length > 0 ? (
           <div className={styles.slide}>
             {slides[slideAtual].endsWith(".mp4") ? (
-              <video controls>
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+              >
                 <source
-                  src={`http://45.70.177.64:3396/slides/${slides[slideAtual]}`}
+                 src={`http://45.70.177.64:3396/slides/${slides[slideAtual]}`}
+                 // src={`http://localhost:5002/slides/${slides[slideAtual]}`}
                   type="video/mp4"
                 />
                 Seu navegador não suporta o vídeo.
               </video>
+
             ) : (
               <img
                 src={`http://45.70.177.64:3396/slides/${slides[slideAtual]}`}
@@ -171,6 +191,21 @@ const Painel = () => {
           <p>Carregando slides...</p>
         )}
       </div>
+
+{overlay && (
+  <div className={styles.overlay}>
+    <div className={styles.overlayContent}>
+      <p className={styles.overlayTipo}>
+        {overlay.tipo === "normal" ? "ATENDIMENTO NORMAL" : "ATENDIMENTO PRIORITÁRIO"}
+      </p>
+      <h1 className={styles.overlaySenha}>Senha: 0{overlay.senha}</h1>
+      <p className={styles.overlayNome}>{overlay.nome}</p>
+      <p className={styles.overlaySetor}>
+        {overlay.setor} {overlay.guiche ? `- Guichê ${overlay.guiche.replace("guiche", "")}` : ""}
+      </p>
+    </div>
+  </div>
+)}
 
     </div>
   );
