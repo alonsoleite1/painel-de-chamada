@@ -19,7 +19,7 @@ export const UsuarioContextProvider = ({ children }) => {
 
         const loadUser = async () => {
             if (token) {
-                
+
                 try {
                     const { data } = await api.get('/usuario/autentificacao/login', {
                         headers: {
@@ -31,7 +31,10 @@ export const UsuarioContextProvider = ({ children }) => {
                 } catch (error) {
                     console.error("Erro ao carregar usuário:", error);
                     localStorage.removeItem("@token");
-                    localStorage.removeItem("@cpf");       
+                    localStorage.removeItem("@cpf");
+                    localStorage.removeItem("@nome");
+                    localStorage.removeItem("@unidade");
+                    localStorage.removeItem("@perfil");
                 }
             }
             setLoading(false);
@@ -53,39 +56,46 @@ export const UsuarioContextProvider = ({ children }) => {
         try {
             const { data } = await api.post("/usuario/login", formData);
             const token = data.accessToken;
-            const { nome, unidade, perfil,cpf } = data.user;
+            const { nome, unidade, perfil, cpf } = data.user;
             setUser(data.user);
             setNome(nome);
             setUnidade(unidade);
             setPerfil(perfil);
-    
+
             localStorage.setItem("@token", JSON.stringify(token));
             localStorage.setItem("@cpf", JSON.stringify(cpf));
-    
+            localStorage.setItem("@nome", JSON.stringify(data.user.nome));
+            localStorage.setItem("@unidade", JSON.stringify(data.user.unidade));
+            localStorage.setItem("@perfil", JSON.stringify(data.user.perfil));
+
             const rotas = {
+                admin: "/usuario",
                 recepcao: "/recepcao",
                 operador: "/selecao",
                 gestor: "/operador",
                 painel: "/painel",
             };
-    
+
             if (rotas[perfil]) {
                 toast.success("Bem-vindo!");
                 navigate(rotas[perfil]);
             } else {
                 toast.error("Perfil não autorizado!");
             }
-    
+
         } catch (error) {
             toast.error("Login ou senha inválidos!");
         }
-    }; 
+    };
 
     const logout = () => {
         navigate("");
         setUser(null);
         localStorage.removeItem("@token");
         localStorage.removeItem("@cpf");
+        localStorage.removeItem("@nome");
+        localStorage.removeItem("@unidade");
+        localStorage.removeItem("@perfil");
     };
 
     return (

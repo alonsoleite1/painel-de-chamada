@@ -42,7 +42,6 @@ const Selecao = () => {
           <option value="">-- Escolher --</option>
           <option value="guiche1">Guichê 1</option>
           <option value="guiche2">Guichê 2</option>
-          <option value="coordenador">Coordenador</option>
         </select>
         {errors.terminal && <span className={styles.error}>Campo obrigatório</span>}
 

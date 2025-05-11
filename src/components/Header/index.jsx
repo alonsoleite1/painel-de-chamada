@@ -7,7 +7,9 @@ import styles from "./styles.module.scss";
 
 const Header = () => {
 
-    const { nome, unidade, logout } = useContext(UsuarioContext);
+    const { logout } = useContext(UsuarioContext);
+    const nome = JSON.parse(localStorage.getItem("@nome"));
+    const unidade = JSON.parse(localStorage.getItem("@unidade"));
 
     return (
         <header>
