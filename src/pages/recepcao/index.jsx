@@ -40,7 +40,7 @@ const Recepcao = () => {
 
         const payload = {
             senha: numero,
-            nome: formData.nome,
+            nome: formData.nome.toUpperCase(),
             tipo,
             status: "aguardando",
             motivo: formData.motivo.toUpperCase(),
