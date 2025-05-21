@@ -1,9 +1,10 @@
-import {  useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import DefaultTemplate from "../../components/DefaultTemplate";
 import styles from "./styles.module.scss";
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import { UsuarioContext } from "../../provider/userContext";
 
 const setores = ["Regulação", "Regulador"];
 
@@ -12,6 +13,8 @@ const Recepcao = () => {
     const [numero, setNumero] = useState(null);
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
+    const { user } = useContext(UsuarioContext);
 
     const token = JSON.parse(localStorage.getItem("@token"));
 
@@ -23,9 +26,15 @@ const Recepcao = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            // Agora considera todas as senhas, não importa o tipo
-            const senhasOrdenadas = data.sort((a, b) => b.senha - a.senha);
+            // Filtra apenas os atendimentos da mesma unidade
+            const senhasDaUnidade = data.filter(item => item.unidade === user.unidade);
+
+            // Ordena as senhas da unidade em ordem decrescente
+            const senhasOrdenadas = senhasDaUnidade.sort((a, b) => b.senha - a.senha);
+
+            // Pega a última senha usada naquela unidade
             const ultimaSenha = senhasOrdenadas[0]?.senha || 0;
+
 
             const novaSenha = ultimaSenha + 1;
             setNumero(novaSenha);
@@ -45,6 +54,7 @@ const Recepcao = () => {
             status: "aguardando",
             motivo: formData.motivo.toUpperCase(),
             setor: formData.setor,
+            unidade: user.unidade,
         };
 
         try {
@@ -86,10 +96,10 @@ const Recepcao = () => {
                             </div>
                             <div>
                                 <label>Nome:</label>
-                                <input type="text" 
-                                {...register("nome",{
-                                    required:true
-                                })}
+                                <input type="text"
+                                    {...register("nome", {
+                                        required: true
+                                    })}
                                 />
                                 {errors.nome && <span className={styles.error}>Informe o nome</span>}
                             </div>
