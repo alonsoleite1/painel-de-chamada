@@ -1,0 +1,106 @@
+@use "../../styles/globals.scss" as *;
+
+/* Cabeçalho */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background-color: $color-pages;
+  padding: 1rem;
+  border-bottom: 2px solid $color-gray-light;
+}
+
+.title {
+  font-size: 2rem;
+  color: $color-gray-dark;
+  font-weight: 600;
+}
+
+/* Formulário */
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background-color: $color-white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba($color-black, 0.05);
+  border: 1px solid $color-gray-light;
+
+  div{
+    display: flex;
+    gap: .5rem;
+    width: 100%;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  flex: 1 1 45%;
+}
+
+/* Larguras */
+.fullWidth {
+  flex: 1 1 100%;
+}
+
+.halfWidth {
+  flex: 1 1 48%;
+}
+
+/* Campos */
+.label {
+  font-weight: 600;
+  color: $color-gray-dark;
+  font-size: 0.95rem;
+}
+
+.input,
+.select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid $color-gray;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: $color-gray-dark;
+  background-color: $color-white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $color-blue;
+    box-shadow: 0 0 0 2px rgba($color-blue-light, 0.4);
+  }
+}
+
+/* Mensagem de erro */
+.error {
+  color: $color-red-dark;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* Botão */
+.buttonContainer {
+  flex: 1 1 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.buttonSave {
+  background-color: $color-green;
+  color: $color-white;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $color-green-dark;
+  }
+}

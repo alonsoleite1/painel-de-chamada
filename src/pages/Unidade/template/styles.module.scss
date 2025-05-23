@@ -1,0 +1,79 @@
+@use '../../../styles/globals.scss' as *;
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background-color: $color-pages;
+  padding: 1rem;
+  border-bottom: 2px solid $color-gray-light;
+}
+
+.title {
+  font-size: 2rem;
+  color: $color-gray-dark;
+  font-weight: 600;
+}
+
+.buttonCadastrar {
+  background-color: $color-green;
+  color: $color-white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: $color-green-dark;
+  }
+}
+
+.listaUsuarios {
+  background-color: $color-white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba($color-black, 0.05);
+  margin-top: 1.5rem;
+}
+
+.tableUsuarios {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    background-color: $color-gray-light;
+    color: $color-gray-dark;
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 2px solid $color-gray;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 0.75rem;
+    border-bottom: 1px solid $color-gray-light;
+    color: $color-gray-dark;
+  }
+
+  tr:hover {
+    background-color: $color-gray-light;
+  }
+}
+
+.buttonUpdate {
+  background-color: $color-blue;
+  color: $color-white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: $color-blue-dark;
+  }
+}

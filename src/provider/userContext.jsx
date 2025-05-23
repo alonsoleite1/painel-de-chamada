@@ -56,10 +56,10 @@ export const UsuarioContextProvider = ({ children }) => {
         try {
             const { data } = await api.post("/usuario/login", formData);
             const token = data.accessToken;
-            const { nome, unidade, perfil, cpf } = data.user;
+            const { nome, perfil, cpf } = data.user;
             setUser(data.user);
             setNome(nome);
-            setUnidade(unidade);
+            setUnidade(data.user.unidade);
             setPerfil(perfil);
 
             localStorage.setItem("@token", JSON.stringify(token));

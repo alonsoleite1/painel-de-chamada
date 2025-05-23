@@ -1,18 +1,43 @@
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import api from "../../../services/api";
 import styles from './styles.module.scss';
 
 const CadastroUsuario = ({ onSubmit }) => {
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
+    const [unidades, setUnidades] = useState([]);
+    const [unidadeSelecionada, setUnidadeSelecionada] = useState('');
+
+    useEffect(() => {
+        const token = JSON.parse(localStorage.getItem("@token"));
+        const unidades = async () => {
+            try {
+                const response = await api.get(`/unidade`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                setUnidades(response.data);
+    
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        unidades();
+    }, []);
+
 
     const submitForm = (payload) => {
         // Converte nome para maiúsculas
         payload.nome = payload.nome.toUpperCase();
-        
+
         // Converte unidadeId para número
-        payload.unidade = payload.unidade.toUpperCase();
-    
+        payload.unidadeId = Number(payload.unidadeId);
+
+        payload.setor = payload.setor?.toUpperCase();
+
         // Agora passa o payload ajustado para a função onSubmit
         onSubmit(payload);
     };
@@ -62,13 +87,19 @@ const CadastroUsuario = ({ onSubmit }) => {
             <div className={`${styles.formGroup} ${styles.halfWidth}`}>
                 <label className={styles.label}>Unidade:</label>
                 <select
-                    {...register('unidade', { required: 'Este campo é obrigatório' })}
+                    {...register('unidadeId', { required: 'Este campo é obrigatório' })}
                     className={styles.select}
+                    onChange={(e) => {
+                        setUnidadeSelecionada(e.target.value);
+                    }}
                 >
                     <option value="">Selecione...</option>
-                <option value="secretaria de saude">Secretaria de Saúde</option>
+                    {unidades.map((unidade) => (
+                        <option key={unidade.id} value={unidade.id}>{unidade.nome}</option>
+                    ))}
                 </select>
-                {errors.unidade && <span className={styles.error}>{errors.unidade.message}</span>}
+
+                {errors.unidadeId && <span className={styles.error}>{errors.unidadeId.message}</span>}
             </div>
 
             <div className={`${styles.formGroup} ${styles.halfWidth}`}>
@@ -87,27 +118,26 @@ const CadastroUsuario = ({ onSubmit }) => {
                 {errors.perfil && <span className={styles.error}>{errors.perfil.message}</span>}
             </div>
 
-                <div className={`${styles.formGroup} ${styles.halfWidth}`}>
+            <div className={`${styles.formGroup} ${styles.halfWidth}`}>
                 <label className={styles.label}>Setor:</label>
                 <select
                     {...register('setor', { required: 'Este campo é obrigatório' })}
                     className={styles.select}
                 >
                     <option value="">Selecione...</option>
-                    <option value="ti">TI</option>
-                    <option value="Regulador">Regulador</option>
-                    <option value="Regulação">Regulação</option>
-                    <option value="painel">Painel</option>
-                    <option value="Atencão Primária">Primaria</option>
-                    <option value="Atencão Secundária">Secundaria</option>
-                     <option value="Secretário de Saúde">Secretario de Saude</option>
-                       <option value="Secretária Executiva">Secretaria Executiva</option>
-                    <option value="RH">RH</option>
-                    <option value="Epidemiologia">Epidemiologia</option>
-                    <option value="Vigilância Sanitaria">Vigilância Sanitaria</option>
+                    {
+                        unidades
+                            .find((u) => String(u.id) === unidadeSelecionada)
+                            ?.Setor?.map((setor) => (
+                                <option key={setor.id} value={setor.nome}>
+                                    {setor.nome}
+                                </option>
+                            ))
+                    }
                 </select>
                 {errors.setor && <span className={styles.error}>{errors.setor.message}</span>}
             </div>
+
 
             <div className={styles.buttonContainer}>
                 <button type="submit" className={styles.buttonSave}>Cadastrar</button>

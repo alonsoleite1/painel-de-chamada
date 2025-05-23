@@ -7,6 +7,27 @@ const AtualizarUsuario = ({ usuario, onSubmit }) => {
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
+    const [unidades, setUnidades] = useState([]);
+    const [unidadeSelecionada, setUnidadeSelecionada] = useState('');
+
+    useEffect(() => {
+        const token = JSON.parse(localStorage.getItem("@token"));
+        const unidades = async () => {
+            try {
+                const response = await api.get(`/unidade`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                setUnidades(response.data);
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        unidades();
+    }, []);
+
     useEffect(() => {
         if (usuario) {
 
@@ -14,7 +35,7 @@ const AtualizarUsuario = ({ usuario, onSubmit }) => {
                 nome: usuario.nome,
                 cpf: usuario.cpf,
                 login: usuario.login,
-                unidade: usuario.unidade,
+                unidadeId: usuario.unidadeId,
                 setor: usuario.setor,
                 perfil: usuario.perfil,
             });
@@ -22,7 +43,8 @@ const AtualizarUsuario = ({ usuario, onSubmit }) => {
     }, [usuario, reset]); // Atualiza os dados sempre que o 'usuario' mudar
 
     const submitForm = (data) => {
-        onSubmit(data); // Enviar dados do formulário
+         data.unidadeId = Number(data.unidadeId);
+        onSubmit(data); 
     };
 
     return (
@@ -71,11 +93,16 @@ const AtualizarUsuario = ({ usuario, onSubmit }) => {
             <div className={`${styles.formGroup} ${styles.halfWidth}`}>
                 <label className={styles.label}>Unidade:</label>
                 <select
-                    {...register('unidade', { required: 'Este campo é obrigatório' })}
+                    {...register('unidadeId', { required: 'Este campo é obrigatório' })}
                     className={styles.select}
+                    onChange={(e) => {
+                        setUnidadeSelecionada(e.target.value);
+                    }}
                 >
                     <option value="">Selecione...</option>
-                    <option value="secretaria de saude">Secretaria de Saúde</option>
+                    {unidades.map((unidade) => (
+                        <option key={unidade.id} value={unidade.id}>{unidade.nome}</option>
+                    ))}
                 </select>
                 {errors.unidade && <span className={styles.error}>{errors.unidade.message}</span>}
             </div>
@@ -103,17 +130,15 @@ const AtualizarUsuario = ({ usuario, onSubmit }) => {
                     className={styles.select}
                 >
                     <option value="">Selecione...</option>
-                    <option value="ti">TI</option>
-                    <option value="Regulador">Regulador</option>
-                    <option value="Regulação">Regulação</option>
-                    <option value="painel">Painel</option>
-                    <option value="Atencão Primária">Primaria</option>
-                    <option value="Atencão Secundária">Secundaria</option>
-                    <option value="Secretário de Saúde">Secretario de Saude</option>
-                    <option value="Secretária Executiva">Secretaria Executiva</option>
-                    <option value="RH">RH</option>
-                    <option value="Epidemiologia">Epidemiologia</option>
-                    <option value="Vigilância Sanitaria">Vigilância Sanitaria</option>
+                    {
+                        unidades
+                            .find((u) => String(u.id) === unidadeSelecionada)
+                            ?.Setor?.map((setor) => (
+                                <option key={setor.id} value={setor.nome}>
+                                    {setor.nome}
+                                </option>
+                            ))
+                    }
                 </select>
                 {errors.setor && <span className={styles.error}>{errors.setor.message}</span>}
             </div>
