@@ -69,7 +69,7 @@ export const UsuarioContextProvider = ({ children }) => {
             localStorage.setItem("@perfil", JSON.stringify(data.user.perfil));
 
             const rotas = {
-                admin: "/usuario",
+                admin: "/admin",
                 recepcao: "/recepcao",
                 operador: "/selecao",
                 gestor: "/operador",
