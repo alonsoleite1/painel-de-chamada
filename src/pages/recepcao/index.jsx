@@ -57,7 +57,7 @@ const Recepcao = () => {
             });
 
             // Filtra apenas os atendimentos da mesma unidade
-            const senhasDaUnidade = data.filter(item => item.unidade === user.unidade);
+            const senhasDaUnidade = data.filter(item => item.unidadeId === user.unidadeId);
 
             // Ordena as senhas da unidade em ordem decrescente
             const senhasOrdenadas = senhasDaUnidade.sort((a, b) => b.senha - a.senha);

@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useContext } from "react";
-import styles from "./styles.module.scss";
+import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
+import styles from "./styles.module.scss";
 
 const Painel = () => {
   // Pega a unidade do contexto de usuário
@@ -60,7 +60,7 @@ const Painel = () => {
   // Função para falar a senha via síntese de voz
   const falarSenha = ({ senha, nome, setor, tipo, guiche = null }) => {
     const guicheFormatado = guiche ? `Guichê ${guiche.replace("guiche", "")}` : "";
-    const frase = `${nome}, senha de número ${senha}, ${tipo}, ${setor} ${guicheFormatado}.`;
+    const frase = `${nome}, senha de número ${senha}, ${tipo}, sala ${setor} ${guicheFormatado}.`;
 
     console.log("🗣️ Frase a ser falada:", frase);
 
@@ -77,8 +77,8 @@ const Painel = () => {
 
   // Conexão e lógica do WebSocket
   useEffect(() => {
-   // const socket = io("http://45.70.177.64:3396");
-   const socket = io("http://localhost:5002");
+    const socket = io("http://45.70.177.64:3396");
+   //const socket = io("http://localhost:5002");
 
     socket.on("connect", () => {
       console.log("✅ Conectado ao servidor WebSocket com ID:", socket.id);

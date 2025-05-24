@@ -6,20 +6,27 @@ import io from "socket.io-client";
 import styles from "./styles.module.scss";
 import { UsuarioContext } from "../../provider/userContext";
 
-//const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
-const socket = io("http://localhost:5002"); // Conecta-se ao servidor WebSocket
+const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
+//const socket = io("http://localhost:5002"); // Conecta-se ao servidor WebSocket
 
 const Operador = () => {
   const [fila, setFila] = useState({ normal: [], prioritario: [] });
   const [atendimentoAtual, setAtendimentoAtual] = useState(null);
   const [atendimentosFinalizados, setAtendimentosFinalizados] = useState([]);
 
-  const token = JSON.parse(localStorage.getItem("@token")) || "";
+  const token = JSON.parse(localStorage.getItem("@token"));
+  const unidade = JSON.parse(localStorage.getItem("@unidade"));
 
   const { user } = useContext(UsuarioContext);
 
-  const normalize = (str) =>
-    str?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const normalize = (value) => {
+    if (typeof value === "string") {
+      return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+    // Converte outros tipos para string e retorna
+    return String(value);
+  };
+
 
   const buscarAtendimentos = async () => {
     if (!user || !user.setor) return;
@@ -32,8 +39,10 @@ const Operador = () => {
       const aguardando = data.filter(
         (item) =>
           item.status === "aguardando" &&
-          normalize(item.setor) === normalize(user.setor)
+          normalize(item.setor) === normalize(user.setor) &&
+          normalize(item.unidadeId) === normalize(user.unidadeId)
       );
+
 
       const filaNormal = aguardando.filter((item) => item.tipo === "normal");
       const filaPrioritario = aguardando.filter((item) => item.tipo === "prioritario");
@@ -54,9 +63,9 @@ const Operador = () => {
   };
 
   useEffect(() => {
-    if (user?.unidade) {
+    if (unidade) {
       socket.emit("entrar-na-sala", user.unidade); // entra na sala da unidade
-      console.log(`Operador conectado na unidade: ${user.unidade}`);
+      console.log(`Operador conectado na unidade: ${unidade}`);
     }
   }, [user]);
 
@@ -82,7 +91,7 @@ const Operador = () => {
       setAtendimentoAtual({ ...proximo, tipo });
 
       // Emite um evento para o painel chamar a senha
-     // console.log("Emitindo evento para o painel:", proximo.senha, proximo.setor);
+      // console.log("Emitindo evento para o painel:", proximo.senha, proximo.setor);
 
       // Verifica se o operador está vinculado a um guichê
       if (user.terminal) {
@@ -92,7 +101,7 @@ const Operador = () => {
           senha: proximo.senha,
           nome: proximo.nome,
           setor: proximo.setor,
-          unidade: user.unidade,  // <-- adiciona aqui
+          unidade: unidade,  // <-- adiciona aqui
           tipo,
           guiche: user.terminal,
         });
@@ -103,7 +112,7 @@ const Operador = () => {
           nome: proximo.nome,
           senha: proximo.senha,
           setor: proximo.setor,
-          unidade: user.unidade,
+          unidade: unidade,
           tipo,
         });
       }
@@ -128,7 +137,7 @@ const Operador = () => {
         senha: atendimentoAtual.senha,
         setor: atendimentoAtual.setor,
         tipo: atendimentoAtual.tipo,
-        unidade: user.unidade, // <-- adiciona aqui também
+        unidade: unidade, // <-- adiciona aqui também
         guiche: user.terminal,
       });
 
