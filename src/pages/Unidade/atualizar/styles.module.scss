@@ -1,0 +1,75 @@
+@use "../../../styles/globals.scss" as *;
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background-color: $color-pages;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid $color-gray-light;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: $color-gray-dark;
+  }
+
+  .input,
+  .select {
+    padding: 0.5rem;
+    border: 1px solid $color-gray;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    background-color: $color-white;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: $color-blue;
+    }
+  }
+
+  .error {
+    color: $color-red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.halfWidth {
+  width: calc(50% - 0.5rem);
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.buttonSave {
+  background-color: $color-green;
+  color: $color-white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: $color-green-dark;
+  }
+}

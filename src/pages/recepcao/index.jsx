@@ -1,17 +1,50 @@
-import {  useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import DefaultTemplate from "../../components/DefaultTemplate";
-import styles from "./styles.module.scss";
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import { UsuarioContext } from "../../provider/userContext";
+import styles from "./styles.module.scss";
 
-const setores = ["Regulação", "Regulador"];
+
 
 const Recepcao = () => {
     const [tipo, setTipo] = useState(null);
     const [numero, setNumero] = useState(null);
+    const [setores, setSetores] = useState([]);
+
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
+    const { user } = useContext(UsuarioContext);
+
+    useEffect(() => {
+        const token = JSON.parse(localStorage.getItem("@token"));
+
+        const fetchUnidades = async () => {
+            try {
+                const { data } = await api.get(`/unidade`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                // Encontra a unidade do usuário
+                const unidadeDoUsuario = data.find(u => u.id === user.unidadeId);
+
+                // Se encontrou, pega os setores dela
+                if (unidadeDoUsuario && unidadeDoUsuario.Setor) {
+                    setSetores(unidadeDoUsuario.Setor.map(setor => setor.nome));
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        if (user) {
+            fetchUnidades();
+        }
+    }, [user]);
+
 
     const token = JSON.parse(localStorage.getItem("@token"));
 
@@ -23,9 +56,15 @@ const Recepcao = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            // Agora considera todas as senhas, não importa o tipo
-            const senhasOrdenadas = data.sort((a, b) => b.senha - a.senha);
+            // Filtra apenas os atendimentos da mesma unidade
+            const senhasDaUnidade = data.filter(item => item.unidadeId === user.unidadeId);
+
+            // Ordena as senhas da unidade em ordem decrescente
+            const senhasOrdenadas = senhasDaUnidade.sort((a, b) => b.senha - a.senha);
+
+            // Pega a última senha usada naquela unidade
             const ultimaSenha = senhasOrdenadas[0]?.senha || 0;
+
 
             const novaSenha = ultimaSenha + 1;
             setNumero(novaSenha);
@@ -45,6 +84,7 @@ const Recepcao = () => {
             status: "aguardando",
             motivo: formData.motivo.toUpperCase(),
             setor: formData.setor,
+            unidadeId: user.unidadeId,
         };
 
         try {
@@ -86,10 +126,10 @@ const Recepcao = () => {
                             </div>
                             <div>
                                 <label>Nome:</label>
-                                <input type="text" 
-                                {...register("nome",{
-                                    required:true
-                                })}
+                                <input type="text"
+                                    {...register("nome", {
+                                        required: true
+                                    })}
                                 />
                                 {errors.nome && <span className={styles.error}>Informe o nome</span>}
                             </div>
@@ -113,6 +153,7 @@ const Recepcao = () => {
                                         <option key={idx} value={setor}>{setor}</option>
                                     ))}
                                 </select>
+
                                 {errors.setor && <span className={styles.error}>Selecione um setor</span>}
                             </div>
 
