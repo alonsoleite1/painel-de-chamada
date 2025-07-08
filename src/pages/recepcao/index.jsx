@@ -32,8 +32,12 @@ const Recepcao = () => {
 
                 // Se encontrou, pega os setores dela
                 if (unidadeDoUsuario && unidadeDoUsuario.Setor) {
-                    setSetores(unidadeDoUsuario.Setor.map(setor => setor.nome));
+                    const setoresFiltrados = unidadeDoUsuario.Setor
+                        .filter(setor => setor.nome.trim().toUpperCase() !== "PAINEL")
+                        .map(setor => setor.nome.trim());
+                    setSetores(setoresFiltrados);
                 }
+
 
             } catch (error) {
                 console.log(error);

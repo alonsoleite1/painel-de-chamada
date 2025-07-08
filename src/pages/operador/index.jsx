@@ -3,8 +3,8 @@ import DefaultTemplate from "../../components/DefaultTemplate";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
-import styles from "./styles.module.scss";
 import { UsuarioContext } from "../../provider/userContext";
+import styles from "./styles.module.scss";
 
 const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
 //const socket = io("http://localhost:5002"); // Conecta-se ao servidor WebSocket
@@ -26,7 +26,6 @@ const Operador = () => {
     // Converte outros tipos para string e retorna
     return String(value);
   };
-
 
   const buscarAtendimentos = async () => {
     if (!user || !user.setor) return;
