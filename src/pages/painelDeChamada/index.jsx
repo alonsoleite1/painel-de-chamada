@@ -149,13 +149,13 @@ const Painel = () => {
       <div className={styles.headerArea}>
         <div className={`${styles.normal} ${destaqueNormal ? styles.destaqueNormal : ""}`}>
           <p>ATENDIMENTO NORMAL</p>
-          <span>{ultimaSenhaNormal ? `Senha: 0${ultimaSenhaNormal}` : "Nenhuma chamada"}</span>
+          <span>{ultimaSenhaNormal ? `Senha: 0${ultimaSenhaNormal}` : "00"}</span>
         </div>
         <div
           className={`${styles.prioritario} ${destaquePrioritario ? styles.destaquePrioritario : ""}`}
         >
           <p>ATENDIMENTO PRIORITÁRIO</p>
-          <span>{ultimaSenhaPrioritario ? `Senha: 0${ultimaSenhaPrioritario}` : "Nenhuma chamada"}</span>
+          <span>{ultimaSenhaPrioritario ? `Senha: 0${ultimaSenhaPrioritario}` : "00"}</span>
         </div>
       </div>
 
