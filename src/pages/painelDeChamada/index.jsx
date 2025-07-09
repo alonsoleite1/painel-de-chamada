@@ -101,7 +101,7 @@ const Painel = () => {
         guiche: data.guiche,
       });
 
-      setTimeout(() => setOverlay(null), 10000); // some após 10 segundos
+      setTimeout(() => setOverlay(null), 20000); // some após 10 segundos
 
 
       if (data.tipo === "normal") {
