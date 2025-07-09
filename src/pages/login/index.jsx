@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import logo from "../../assets/logo.png";
 import { UsuarioContext } from '../../provider/userContext';
+import { appBuildDate, appVersion } from '../../config/version';
 import styles from "./styles.module.scss";
 
 const Login = () => {
@@ -10,7 +11,7 @@ const Login = () => {
   const { login } = useContext(UsuarioContext);
 
   const onSubmit = (data) => {
-   login(data)
+    login(data)
   };
 
   return (
@@ -47,6 +48,12 @@ const Login = () => {
           Entrar
         </button>
       </form>
+      <p className={styles.versionInfo}>
+        Versão: {appVersion} - {appBuildDate}
+      </p>
+       <footer className={styles.footer}>
+        Todos os direitos reservados © <strong>CODEFER</strong> 2025
+      </footer>
     </div>
   );
 };

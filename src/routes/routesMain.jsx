@@ -8,6 +8,7 @@ import Usuarios from "../pages/Usuario/template";
 import Admin from "../pages/admin";
 import Unidade from "../pages/Unidade/template";
 import Setor from "../pages/setor";
+import Triagem from "../pages/triagem";
 
 const RoutesMain = () => {
   return (
@@ -21,6 +22,7 @@ const RoutesMain = () => {
       <Route path="/painel" element={<Painel />} />
       <Route path="/recepcao" element={<Recepcao />} />
       <Route path="/operador" element={<Operador />} />
+      <Route path="/triagem" element={<Triagem />} />
     </Routes>
   );
 };

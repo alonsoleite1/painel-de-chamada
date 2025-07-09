@@ -74,6 +74,7 @@ export const UsuarioContextProvider = ({ children }) => {
                 operador: "/selecao",
                 gestor: "/operador",
                 painel: "/painel",
+                triagem: "/triagem",
             };
 
             if (rotas[perfil]) {

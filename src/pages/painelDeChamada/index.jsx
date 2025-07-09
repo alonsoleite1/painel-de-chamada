@@ -47,19 +47,9 @@ const Painel = () => {
     }
   };
 
-  // Função para entrar em tela cheia
-  const entrarEmTelaCheia = () => {
-    const elemento = document.documentElement;
-    if (elemento.requestFullscreen) {
-      elemento.requestFullscreen().catch((err) => {
-        console.error("Erro ao entrar em tela cheia:", err);
-      });
-    }
-  };
-
   // Função para falar a senha via síntese de voz
   const falarSenha = ({ senha, nome, setor, tipo, guiche = null }) => {
-    const guicheFormatado = guiche ? `Guichê ${guiche.replace("guiche", "")}` : "";
+    const guicheFormatado = guiche ? ` ${guiche}` : "";
     const frase = `${nome}, senha de número ${senha}, ${tipo}, sala ${setor} ${guicheFormatado}.`;
 
     console.log("🗣️ Frase a ser falada:", frase);
@@ -77,8 +67,8 @@ const Painel = () => {
 
   // Conexão e lógica do WebSocket
   useEffect(() => {
-    const socket = io("http://45.70.177.64:3396");
-    //const socket = io("http://localhost:5002");
+    //const socket = io("http://45.70.177.64:3396");
+    const socket = io("http://localhost:5002");
 
     socket.on("connect", () => {
       console.log("✅ Conectado ao servidor WebSocket com ID:", socket.id);
@@ -113,7 +103,6 @@ const Painel = () => {
 
       setTimeout(() => setOverlay(null), 10000); // some após 10 segundos
 
-      entrarEmTelaCheia(); // força tela cheia ao chamar
 
       if (data.tipo === "normal") {
         setUltimaSenhaNormal(data.senha);
@@ -204,7 +193,7 @@ const Painel = () => {
             <p className={styles.overlayNome}>{overlay.nome}</p>
             <p className={styles.overlaySetor}>
               {overlay.setor}{" "}
-              {overlay.guiche ? `- Guichê ${overlay.guiche.replace("guiche", "")}` : ""}
+              {overlay.guiche ? `- ${overlay.guiche.replace("guiche", "")}` : ""}
             </p>
           </div>
         </div>

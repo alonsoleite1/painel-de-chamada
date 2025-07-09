@@ -9,7 +9,7 @@ import styles from "./styles.module.scss";
 //const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
 const socket = io("http://localhost:5002"); // Conecta-se ao servidor WebSocket
 
-const Operador = () => {
+const Triagem = () => {
   const [fila, setFila] = useState({ normal: [], prioritario: [] });
   const [atendimentoAtual, setAtendimentoAtual] = useState(null);
   const [atendimentosFinalizados, setAtendimentosFinalizados] = useState([]);
@@ -21,42 +21,22 @@ const Operador = () => {
 
   const { user } = useContext(UsuarioContext);
 
-  const normalize = (value) => {
-    if (typeof value === "string") {
-      return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
-    // Converte outros tipos para string e retorna
-    return String(value);
-  };
-
   const buscarAtendimentos = async () => {
-    if (!user || !user.setor) return;
+    if (!user) return;
 
     try {
-      const { data } = await api.get("/painel", {
+      const { data } = await api.get(`/painel/triagem/${user.unidadeId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const aguardando = data.filter(
-        (item) =>
-          item.status === "aguardando" &&
-          normalize(item.setor) === normalize(user.setor) &&
-          normalize(item.unidadeId) === normalize(user.unidadeId)
-      );
-
-
-      const filaNormal = aguardando.filter((item) => item.tipo === "normal");
-      const filaPrioritario = aguardando.filter((item) => item.tipo === "prioritario");
+      // Separar normal e prioritário sem filtrar por setor
+      const filaNormal = data.filter((item) => item.tipo === 'normal');
+      const filaPrioritario = data.filter((item) => item.tipo === 'prioritario');
 
       setFila({ normal: filaNormal, prioritario: filaPrioritario });
 
-      const finalizados = data.filter(
-        (item) =>
-          item.status === "encerrado" &&
-          normalize(item.setor) === normalize(user.setor)
-      );
-
-      setAtendimentosFinalizados(finalizados);
+      // Se quiser, pode atualizar essa lógica para incluir finalizados se vierem da mesma rota
+      setAtendimentosFinalizados([]); // ou manter do jeito atual
     } catch (error) {
       toast.error("Erro ao buscar atendimentos");
       console.error(error);
@@ -147,11 +127,11 @@ const Operador = () => {
     }
   };
 
-  const finalizarAtendimento = async () => {
+  const atualizarTriagem = async () => {
     if (!atendimentoAtual) return;
 
     try {
-      await api.patch(`/painel/${atendimentoAtual.id}`, { status: "encerrado" }, {
+      await api.patch(`/painel/${atendimentoAtual.id}`, { triagem: true }, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -160,9 +140,9 @@ const Operador = () => {
         { ...atendimentoAtual, status: "encerrado" },
       ]);
       setAtendimentoAtual(null);
-      toast.success("Atendimento finalizado");
+      toast.success("Triagem Realizada");
     } catch (error) {
-      toast.error("Erro ao finalizar atendimento");
+      toast.error("Erro ao finalizar triagem");
       console.error(error);
     }
   };
@@ -223,7 +203,7 @@ const Operador = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              finalizarAtendimento();
+              atualizarTriagem();
             }}
             className={styles.form}
           >
@@ -239,7 +219,7 @@ const Operador = () => {
             </button>
 
             <button type="submit" className={styles.finalizar}>
-              Finalizar
+              Finalizar Triagem
             </button>
           </form>
         )}
@@ -253,4 +233,4 @@ const Operador = () => {
   );
 };
 
-export default Operador;
+export default Triagem;

@@ -26,3 +26,17 @@ $color-black: #000000;
 
 // === Nova cor para páginas ou fundo de seções ===
 $color-pages: #F1F3F5;  // Uma cor mais suave que o cinza claro para fundo de páginas
+
+// Adiciona estas variáveis ao seu arquivo globals.scss
+
+$color-primary: $color-blue; 
+$color-primary-dark: $color-blue-dark;
+$color-secondary: $color-yellow;
+$color-secondary-dark: $color-yellow-dark;
+
+$shadow-light: 0 4px 8px rgba(0, 0, 0, 0.12);
+$shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.18);
+
+$border-radius-lg: 0.8rem;
+$transition-fast: 0.2s ease;
+
