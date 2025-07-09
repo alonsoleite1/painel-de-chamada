@@ -67,8 +67,8 @@ const Painel = () => {
 
   // Conexão e lógica do WebSocket
   useEffect(() => {
-    //const socket = io("http://45.70.177.64:3396");
-    const socket = io("http://localhost:5002");
+    const socket = io("http://45.70.177.64:3396");
+    //const socket = io("http://localhost:5002");
 
     socket.on("connect", () => {
       console.log("✅ Conectado ao servidor WebSocket com ID:", socket.id);
