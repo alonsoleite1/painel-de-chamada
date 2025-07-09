@@ -114,6 +114,7 @@ const CadastroUsuario = ({ onSubmit }) => {
                     <option value="operador">Operador</option>
                     <option value="painel">Painel</option>
                     <option value="recepcao">Recepção</option>
+                    <option value="triagem">Triagem</option>
                 </select>
                 {errors.perfil && <span className={styles.error}>{errors.perfil.message}</span>}
             </div>
