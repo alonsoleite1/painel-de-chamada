@@ -6,153 +6,253 @@
   flex-direction: column;
   height: 100vh;
   width: 100%;
-  overflow: hidden;
   background-color: $color-gray-light;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100%;
   overflow: hidden;
-  background-color: $color-gray-light;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.headerArea {
-  flex: 0 0 20%;
+.mainContent {
   display: flex;
-  flex-direction: column;
-  margin-top: 0.4rem; // você pode manter isso como espaço do topo
-}
-
-.normal,
-.prioritario {
-  flex: 1; // 👈 garante 50% da altura da headerArea para cada
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 5rem;
-  font-size: clamp(2.5rem, 4vw, 4rem);
-  font-weight: 600;
-  color: $color-white;
-
-  p {
-    margin: 0;
-  }
-
-  span {
-     font-size: clamp(4rem, 4vw, 6rem);
-    font-weight: 700;
-  }
-}
-
-
-.normal {
-  background-color: $color-blue;
-}
-
-.prioritario {
-  background-color: $color-green-dark;
-}
-
-.slideArea {
   flex: 1;
-  background: linear-gradient(
-  to bottom right,
-  rgba(0, 71, 171, 0.8),
-  rgba(255, 215, 0, 0.7),
-  rgba(34, 139, 34, 0.7),
-  rgba(255, 255, 255, 0.9)
-);
+  width: 100%;
+  padding: 1rem 2vw;
+  box-sizing: border-box;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
 
+/* Slide principal */
+.slideArea {
+  flex: 1 1 60%;
+  min-width: 320px;
+  height: clamp(300px, 70vh, 1000px);
+  background: linear-gradient(to bottom right, rgba(0, 71, 171, 0.8), rgba(255, 215, 0, 0.7), rgba(34, 139, 34, 0.7), rgba(255, 255, 255, 0.9));
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   overflow: hidden;
+  position: relative;
 }
 
 .slide {
   width: 100%;
   height: 100%;
-  padding: 1rem; // Espaço interno para evitar que o conteúdo fique colado
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 1rem;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .slide img,
 .slide video {
   max-width: 100%;
   max-height: 100%;
+  border-radius: 10px;
   object-fit: contain;
-  object-position: center;
   background-color: $color-gray-light;
   animation: fadeInSlide 0.8s ease-in-out;
-  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
-@keyframes gradientShift {
-  0% {
-    background: linear-gradient(to bottom right, #0047ab, #ffd700, #228b22, #d00000);
-  }
-  50% {
-    background: linear-gradient(to bottom right, #228b22, #1674df, #ffffff, #0047ab);
-  }
-  100% {
-    background: linear-gradient(to bottom right, #0047ab, #ffd700, #228b22, #d00000);
+/* Painel lateral */
+.sidePanel {
+  flex: 1 1 35%;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  height: clamp(300px, 70vh, 1000px);
+  gap: 1rem;
+}
+
+/* Emblema */
+.emblema {
+  flex: 0 0 25%;
+  background-color: $color-white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+
+  img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
   }
 }
 
-.slideArea {
+/* Senhas */
+.ultimasSenhas {
   flex: 1;
-  animation: gradientShift 15s ease infinite;
+  background-color: $color-white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+
+  .senhaBox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: clamp(1.6rem, 2vw, 2.2rem);
+    color: $color-white;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    user-select: none;
+
+    &.normal {
+      background-color: $color-blue;
+    }
+    &.prioritario {
+      background-color: $color-green-dark;
+    }
+
+    p {
+      margin: 0;
+      font-size: clamp(1.2rem, 1.8vw, 1.8rem);
+      font-weight: 600;
+    }
+
+    span {
+      font-size: clamp(2.2rem, 3vw, 3rem);
+      font-weight: 900;
+    }
+  }
+}
+
+/* Rodapé lateral */
+.infoInferior {
+  flex: 0 0 30%;
+  background-color: $color-white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(1rem, 1.2vw, 1.5rem);
+  color: $color-gray-dark;
+  font-weight: 600;
+  text-align: center;
+
+  .dataHora {
+    font-size: clamp(1.6rem, 2.5vw, 2.5rem);
+    font-weight: 700;
+    color: $color-blue-dark;
+  }
+
+  .temperatura {
+    margin-top: 0.5rem;
+    font-size: clamp(1.4rem, 2vw, 2rem);
+    color: $color-green-dark;
+  }
+}
+
+/* Footer notícias */
+.footer {
+  flex: 0 0 auto;
+  min-height: 7vh;
+  background-color: $color-blue-dark;
+  color: $color-white;
+  padding: 0.6rem 1rem;
+  font-size: clamp(1rem, 1.3vw, 1.5rem);
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.15);
   overflow: hidden;
 }
 
+.noticiaLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  text-decoration: none;
+  width: 100%;
+  overflow: hidden;
+  gap: 1rem;
+  transition: background-color 0.3s ease;
+
+  &:hover,
+  &:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    outline: none;
+  }
+}
+
+.noticiaImagem {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+  box-shadow: 0 0 5px rgba(0,0,0,0.4);
+}
+
+.noticiaTexto {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.noticiaTitulo {
+  font-size: clamp(1rem, 1.2vw, 1.3rem);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.noticiaFonte {
+  font-size: clamp(0.75rem, 1vw, 0.9rem);
+  font-weight: 500;
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.extraInfo {
+  background-color: $color-gray-light;
+  padding: 0.8rem 1.2rem;
+  font-size: clamp(1rem, 1.2vw, 1.4rem);
+  color: $color-blue-dark;
+  font-style: italic;
+  font-weight: 500;
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeInVersiculo 0.6s ease-in-out;
+}
+
+@keyframes fadeInVersiculo {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Animações */
-@keyframes destaqueSenha {
-  0% {
-    transform: scale(1);
-    background-color: color.adjust($color-green, $lightness: 10%);
-  }
-  50% {
-    transform: scale(1.1);
-    background-color: color.adjust($color-green, $lightness: -10%);
-  }
-  100% {
-    transform: scale(1);
-    background-color: $color-green;
-  }
-}
-
-@keyframes destaqueSenhaNormal {
-  0% {
-    transform: scale(1);
-    background-color: color.adjust($color-blue-dark, $lightness: 10%);
-  }
-  50% {
-    transform: scale(1.1);
-    background-color: color.adjust($color-blue-dark, $lightness: -10%);
-  }
-  100% {
-    transform: scale(1);
-    background-color: $color-blue-dark;
-  }
-}
-
-
-.destaqueNormal {
-  animation: destaqueSenhaNormal 0.6s ease;
-}
-
-.destaquePrioritario {
-  animation: destaqueSenha 0.6s ease;
-}
 @keyframes fadeInSlide {
   0% {
     opacity: 0;
@@ -207,27 +307,45 @@
 }
 
 .overlayTipo {
-  font-size: 5rem;
+  font-size: clamp(2rem, 5vw, 5rem);
   font-weight: bold;
   margin-bottom: 1rem;
   color: $color-yellow;
 }
 
 .overlaySenha {
-  font-size: 7rem;
+  font-size: clamp(3rem, 7vw, 7rem);
   font-weight: 900;
   color: $color-red;
   margin-bottom: 1rem;
 }
 
 .overlayNome {
-  font-size: 5rem;
+  font-size: clamp(2rem, 5vw, 5rem);
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .overlaySetor {
-  font-size: 5rem;
+  font-size: clamp(2rem, 5vw, 5rem);
   font-style: italic;
 }
 
+/* Responsividade extra */
+@media (max-width: 768px) {
+  .mainContent {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .slideArea,
+  .sidePanel {
+    width: 100%;
+    height: auto;
+  }
+
+  .footer {
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+}
