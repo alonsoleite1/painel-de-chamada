@@ -146,20 +146,7 @@ const Painel = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.headerArea}>
-        <div className={`${styles.normal} ${destaqueNormal ? styles.destaqueNormal : ""}`}>
-          <p>ATENDIMENTO NORMAL</p>
-          <span>{ultimaSenhaNormal ? `Senha: 0${ultimaSenhaNormal}` : "00"}</span>
-        </div>
-        <div
-          className={`${styles.prioritario} ${destaquePrioritario ? styles.destaquePrioritario : ""}`}
-        >
-          <p>ATENDIMENTO PRIORITÁRIO</p>
-          <span>{ultimaSenhaPrioritario ? `Senha: 0${ultimaSenhaPrioritario}` : "00"}</span>
-        </div>
-      </div>
-
-      {/* Área dos slides */}
+            {/* Área dos slides */}
       <div className={styles.slideArea}>
         {slides.length > 0 ? (
           <div className={styles.slide}>
