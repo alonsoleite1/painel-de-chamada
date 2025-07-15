@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
+import logo from "../../assets/inicio.png";
+import versiculos from "./versiculo";
 import styles from "./styles.module.scss";
 
 const Painel = () => {
@@ -11,6 +13,11 @@ const Painel = () => {
   const [slides, setSlides] = useState([]);
   const [slideAtual, setSlideAtual] = useState(0);
   const [overlay, setOverlay] = useState(null);
+  const [versiculo, setVersiculo] = useState(null);
+    const [versiculoIndex, setVersiculoIndex] = useState(0);
+  const [temperatura, setTemperatura] = useState(null);
+  const [noticias, setNoticias] = useState([]);
+  const [noticiaAtual, setNoticiaAtual] = useState(0);
 
   const [ultimaSenhaNormal, setUltimaSenhaNormal] = useState(
     localStorage.getItem("ultimaSenhaNormal") || null
@@ -144,39 +151,184 @@ const Painel = () => {
     return () => clearInterval(intervalo);
   }, [slides]);
 
+  //Buscar temperatura 
+  useEffect(() => {
+    const buscarTemperatura = async () => {
+      try {
+        const response = await fetch(
+          "https://api.openweathermap.org/data/2.5/weather?q=Pacatuba,CE,BR&appid=1856bad14abe99fdb90a136ca91c3d70&units=metric&lang=pt_br"
+        );
+        const data = await response.json();
+        const temp = Math.round(data.main.temp);
+        const condicao = data.weather[0].description;
+        setTemperatura(`${temp}°C · ${condicao}`);
+      } catch (err) {
+        console.error("Erro ao buscar temperatura:", err);
+        setTemperatura("Clima indisponível");
+      }
+    };
+
+    buscarTemperatura();
+    const intervalo = setInterval(buscarTemperatura, 10 * 60 * 1000);
+    return () => clearInterval(intervalo);
+  }, []);
+
+  // Buscar noticias
+  useEffect(() => {
+    const fetchNoticias = async () => {
+      try {
+        const response = await fetch(
+          `https://gnews.io/api/v4/top-headlines?country=br&max=5&token=1f482e0e8896e703760bdc9a1587dc99`
+        );
+        const data = await response.json();
+
+        if (data.articles && data.articles.length > 0) {
+          setNoticias(data.articles);
+          setNoticiaAtual(0); // Começa da primeira notícia
+        } else {
+          setNoticias([]);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar notícias:", error);
+        setNoticias([]);
+      }
+    };
+
+    fetchNoticias();
+
+    const interval = setInterval(fetchNoticias, 15 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Troca a notícia exibida a cada 5 segundos
+  useEffect(() => {
+    if (noticias.length === 0) return;
+
+    const intervaloNoticia = setInterval(() => {
+      setNoticiaAtual((prev) => (prev + 1) % noticias.length);
+    }, 30000);
+
+    return () => clearInterval(intervaloNoticia);
+  }, [noticias]);
+
+   useEffect(() => {
+    const intervalo = setInterval(() => {
+      setVersiculoIndex((oldIndex) => (oldIndex + 1) % versiculos.length);
+    }, 100000);
+
+    return () => clearInterval(intervalo);
+  }, []);
+
+  // Versículo atual baseado no índice
+  const versiculoAtual = versiculos[versiculoIndex];
+
   return (
     <div className={styles.container}>
-            {/* Área dos slides */}
-      <div className={styles.slideArea}>
-        {slides.length > 0 ? (
-          <div className={styles.slide}>
-            {slides[slideAtual].endsWith(".mp4") ? (
-              <video autoPlay muted loop playsInline>
-                <source
+      <div className={styles.mainContent}>
+        {/* Área do slide - 60% largura e 70% altura */}
+        <div className={styles.slideArea}>
+          {slides.length > 0 ? (
+            <div className={styles.slide}>
+              {slides[slideAtual].endsWith(".mp4") ? (
+                <video autoPlay muted loop playsInline>
+                  <source
+                    src={`http://45.70.177.64:3396/slides/${slides[slideAtual]}`}
+                    type="video/mp4"
+                  />
+                  Seu navegador não suporta o vídeo.
+                </video>
+              ) : (
+                <img
                   src={`http://45.70.177.64:3396/slides/${slides[slideAtual]}`}
-                  type="video/mp4"
+                  alt={`Slide ${slideAtual + 1}`}
                 />
-                Seu navegador não suporta o vídeo.
-              </video>
-            ) : (
-              <img
-                src={`http://45.70.177.64:3396/slides/${slides[slideAtual]}`}
-                alt={`Slide ${slideAtual + 1}`}
-              />
-            )}
+              )}
+            </div>
+          ) : (
+            <p>Carregando slides...</p>
+          )}
+        </div>
+
+        {/* Coluna lateral direita 40% */}
+        <div className={styles.sidePanel}>
+          {/* Emblema do município */}
+          <div className={styles.emblema}>
+            <img
+              src={logo}
+              alt="Emblema do Município"
+            // Ajuste o caminho da imagem conforme sua pasta pública
+            />
           </div>
+
+          {/* Últimas senhas chamadas */}
+          <div className={styles.ultimasSenhas}>
+            <div className={`${styles.senhaBox} ${styles.normal}`}>
+              <p>ATENDIMENTO NORMAL</p>
+              <span>{ultimaSenhaNormal ? `0${ultimaSenhaNormal}` : "00"}</span>
+            </div>
+            <div className={`${styles.senhaBox} ${styles.prioritario}`}>
+              <p>ATENDIMENTO PRIORITÁRIO</p>
+              <span>{ultimaSenhaPrioritario ? `0${ultimaSenhaPrioritario}` : "00"}</span>
+            </div>
+          </div>
+
+          {/* Informações inferiores: data, hora, temperatura */}
+          <div className={styles.infoInferior}>
+            <div className={styles.dataHora}>
+              {new Date().toLocaleString("pt-BR", {
+                dateStyle: "short",
+                timeStyle: "short",
+              })}
+            </div>
+            <div className={styles.temperatura}>{temperatura || "Carregando clima..."}</div>
+          </div>
+        </div>
+      </div>
+
+         <div className={styles.extraInfo}>
+        📖 "{versiculoAtual.texto}" — {versiculoAtual.referencia}
+      </div>
+
+      {/* Footer para notícias */}
+      <div className={styles.footer}>
+        {noticias.length > 0 ? (
+          <a
+            href={noticias[noticiaAtual].url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.noticiaLink}
+            title={noticias[noticiaAtual].description || noticias[noticiaAtual].title}
+          >
+            <img
+              src={noticias[noticiaAtual].image}
+              alt="Imagem da notícia"
+              className={styles.noticiaImagem}
+              loading="lazy"
+            />
+            <div className={styles.noticiaTexto}>
+              <h4 className={styles.noticiaTitulo}>{noticias[noticiaAtual].title}</h4>
+              <span className={styles.noticiaFonte}>
+                {noticias[noticiaAtual].source.name} —{" "}
+                {new Date(noticias[noticiaAtual].publishedAt).toLocaleDateString('pt-BR', {
+                  day: '2-digit', month: '2-digit', year: 'numeric'
+                })}
+              </span>
+            </div>
+          </a>
         ) : (
-          <p>Carregando slides...</p>
+          "Carregando notícias..."
         )}
       </div>
 
+
+      {/* Overlay da chamada da senha */}
       {overlay && (
         <div className={styles.overlay}>
           <div className={styles.overlayContent}>
             <p className={styles.overlayTipo}>
               {overlay.tipo === "normal" ? "ATENDIMENTO NORMAL" : "ATENDIMENTO PRIORITÁRIO"}
             </p>
-            <h1 className={styles.overlaySenha}>Senha: 0{overlay.senha}</h1>
+            <h1 className={styles.overlaySenha}>SENHA: 0{overlay.senha}</h1>
             <p className={styles.overlayNome}>{overlay.nome}</p>
             <p className={styles.overlaySetor}>
               {overlay.setor}{" "}
@@ -187,6 +339,7 @@ const Painel = () => {
       )}
     </div>
   );
+
 };
 
 export default Painel;
