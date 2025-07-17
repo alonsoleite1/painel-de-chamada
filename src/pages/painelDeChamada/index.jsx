@@ -174,31 +174,32 @@ const Painel = () => {
   }, []);
 
   // Buscar noticias
-  useEffect(() => {
-    const fetchNoticias = async () => {
-      try {
-        const response = await fetch(
-          `https://gnews.io/api/v4/top-headlines?country=br&max=5&token=1f482e0e8896e703760bdc9a1587dc99`
-        );
-        const data = await response.json();
+useEffect(() => {
+  const fetchNoticias = async () => {
+    try {
+      const response = await fetch(
+        `https://gnews.io/api/v4/top-headlines?country=br&max=5&token=1f482e0e8896e703760bdc9a1587dc99`
+      );
+      const data = await response.json();
 
-        if (data.articles && data.articles.length > 0) {
-          setNoticias(data.articles);
-          setNoticiaAtual(0); // Começa da primeira notícia
-        } else {
-          setNoticias([]);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar notícias:", error);
+      if (data.articles && data.articles.length > 0) {
+        setNoticias(data.articles);
+        setNoticiaAtual(0);
+      } else {
         setNoticias([]);
       }
-    };
+    } catch (error) {
+      console.error("Erro ao buscar notícias:", error);
+      setNoticias([]);
+    }
+  };
 
-    fetchNoticias();
+  fetchNoticias(); // primeira chamada ao carregar
 
-    const interval = setInterval(fetchNoticias, 15 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const interval = setInterval(fetchNoticias, 3 * 60 * 60 * 1000); // <-- Aqui: 3 horas
+
+  return () => clearInterval(interval);
+}, []);
 
   // Troca a notícia exibida a cada 5 segundos
   useEffect(() => {
