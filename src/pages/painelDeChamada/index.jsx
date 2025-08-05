@@ -140,13 +140,13 @@ const Painel = () => {
     };
   }, [unidade]);
 
-  // Controle do slide atual (avança a cada 30 segundos)
+  // Controle do slide atual (avança a cada 60 segundos)
   useEffect(() => {
     if (slides.length === 0) return;
 
     const intervalo = setInterval(() => {
       setSlideAtual((prev) => (prev + 1) % slides.length);
-    }, 30000);
+    }, 60000);
 
     return () => clearInterval(intervalo);
   }, [slides]);
