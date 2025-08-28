@@ -7,7 +7,7 @@ import Operador from "../pages/operador";
 import Usuarios from "../pages/Usuario/template";
 import Admin from "../pages/admin";
 import Unidade from "../pages/Unidade/template";
-import Setor from "../pages/setor";
+import Setor from "../pages/setor/template";
 import Triagem from "../pages/triagem";
 
 const RoutesMain = () => {

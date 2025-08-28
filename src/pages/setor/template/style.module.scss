@@ -1,0 +1,122 @@
+@use "../../../styles/globals.scss" as *;
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: $color-gray-dark;
+}
+
+.buttonCadastrar {
+  background-color: $color-primary;
+  color: $color-white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: $border-radius-lg;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: $color-primary-dark;
+  }
+}
+
+/* Estilo do formulário de cadastro */
+.cadastroForm {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  input,
+  select {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid $color-gray;
+    border-radius: $border-radius-lg;
+    font-size: 1rem;
+    outline: none;
+    flex: 1;
+
+    &:focus {
+      border-color: $color-primary;
+      box-shadow: $shadow-light;
+    }
+  }
+
+  button {
+    background-color: $color-green;
+    color: $color-white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: $border-radius-lg;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $color-green-dark;
+    }
+  }
+}
+
+/* Lista de setores (tabela) */
+.listaSetores {
+  background-color: $color-white;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-light;
+  overflow-x: auto;
+
+  .tableSetores {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 400px;
+
+    th,
+    td {
+      padding: 0.8rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: $color-gray-light;
+      font-weight: 600;
+      color: $color-gray-dark;
+    }
+
+    td {
+      border-top: 1px solid $color-gray-light;
+      color: $color-gray-dark;
+    }
+
+    tr:nth-child(even) {
+      background-color: $color-pages;
+    }
+
+    .buttonDelete {
+      background-color: $color-red;
+      color: $color-white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: $border-radius-lg;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color $transition-fast;
+
+      &:hover {
+        background-color: $color-red-dark;
+      }
+    }
+
+    .noData {
+      text-align: center;
+      color: $color-gray;
+      padding: 1rem;
+    }
+  }
+}

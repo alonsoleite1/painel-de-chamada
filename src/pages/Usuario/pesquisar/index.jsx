@@ -1,31 +1,27 @@
 import { useForm } from "react-hook-form";
 import styles from './styles.module.scss';
 
-const BuscaUsuario = ({  onSearch }) => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+const BuscaUsuario = ({ onSearch }) => {
+    const { register, handleSubmit } = useForm();
 
     const submitForm = (data) => {
-        onSearch(data.cpf); // Buscar usuário pelo CPF
+        onSearch(data.termo); // agora pode ser cpf ou nome
     };
 
     return (
         <div className={styles.container}>
-            {/* Formulário de busca */}
             <form onSubmit={handleSubmit(submitForm)} className={styles.formBusca}>
-                <label className={styles.label}>CPF:</label>
+                <label className={styles.label}>Buscar por CPF ou Nome:</label>
                 <input
-                    {...register('cpf', { required: 'Este campo é obrigatório' })}
+                    {...register('termo')}
                     className={styles.inputBusca}
                     type="text"
+                    placeholder="Digite CPF ou Nome"
                 />
-                {errors.cpf && <span className={styles.errorBusca}>{errors.cpf.message}</span>}
-
                 <button type="submit" className={styles.buttonSearch}>Buscar</button>
             </form>
-
         </div>
     );
 };
 
 export default BuscaUsuario;
-
