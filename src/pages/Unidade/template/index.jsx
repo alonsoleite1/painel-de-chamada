@@ -1,129 +1,156 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DefaultTemplate from "../../../components/DefaultTemplate";
 import CadastroUnidade from '../cadastro';
 import AtualizarUnidade from '../atualizar';
-import BuscarUnidadeo from '../pesquisar';
+import BuscarUnidade from '../pesquisar';
 import api from '../../../services/api';
 import { toast } from 'react-toastify';
 import styles from './styles.module.scss';
 
 const Unidade = () => {
-    const [unidade, setUnidade] = useState(null); // Estado para o usuário encontrado
-    const [showCadastro, setShowCadastro] = useState(false); // Estado para exibir o formulário de cadastro
-    const [showAtualizar, setShowAtualizar] = useState(false); // Estado para exibir o formulário de atualização
+    const [unidades, setUnidades] = useState([]); // Todas as unidades
+    const [filtro, setFiltro] = useState(""); // Filtro de busca (nome)
+    const [unidadeEdicao, setUnidadeEdicao] = useState(null);
+
+    const [showCadastro, setShowCadastro] = useState(false);
+    const [showAtualizar, setShowAtualizar] = useState(false);
+
+    // Paginação
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const itensPorPagina = 10;
+
+    // Buscar todas as unidades na API ao carregar
+    useEffect(() => {
+        const fetchUnidades = async () => {
+            const token = JSON.parse(localStorage.getItem("@token"));
+            try {
+                const response = await api.get("/unidade", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setUnidades(response.data);
+            } catch (error) {
+                toast.error(error.response?.data?.message || "Erro ao carregar unidades");
+            }
+        };
+
+        fetchUnidades();
+    }, []);
 
     const handleCadastro = async (payload) => {
         const token = JSON.parse(localStorage.getItem("@token"));
-
         try {
             await api.post("/unidade", payload, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+                headers: { Authorization: `Bearer ${token}` }
             });
-            setShowCadastro(false); // Fechar o formulário 
-            toast.success("Unidade Cadastrado!");
-            navigate("/unidade");
+            setShowCadastro(false);
+            toast.success("Unidade cadastrada!");
+            window.location.reload();
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message);
         }
     };
 
     const handleAtualizar = async (payload) => {
+        console.log(unidadeEdicao)
         const token = JSON.parse(localStorage.getItem("@token"));
-        const nome = payload.nome; // Aqui você pode pegar o `id` do usuário
-
         try {
-            await api.patch(`/unidade/${nome}`, payload, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            await api.patch(`/unidade/${unidadeEdicao.id}`, payload, {
+                headers: { Authorization: `Bearer ${token}` }
             });
-            setShowAtualizar(false); // Fechar o formulário 
-            toast.success("Unidade Atualizado!");
-            navigate("/unidade");
+            setShowAtualizar(false);
+            toast.success("Unidade atualizada!");
+            window.location.reload();
         } catch (error) {
-            toast.error(error.response.data.message);
-        }
-    };   
-
-    const handleBusca = async (nome) => {
-        const token = JSON.parse(localStorage.getItem("@token"));
-
-        try {
-            const response = await api.get(`/unidade/${nome}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setUnidade(response.data); // Exemplo de retorno
-            toast.success("Unidade Encontrada!");
-        } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message);
         }
     };
+
+    // Filtro de busca local
+    const unidadesFiltradas = unidades.filter(uni =>
+        filtro ? uni.nome.toLowerCase().includes(filtro.toLowerCase()) : true
+    );
+
+    // Paginação
+    const indiceUltimo = paginaAtual * itensPorPagina;
+    const indicePrimeiro = indiceUltimo - itensPorPagina;
+    const unidadesPaginadas = unidadesFiltradas.slice(indicePrimeiro, indiceUltimo);
+
+    const totalPaginas = Math.ceil(unidadesFiltradas.length / itensPorPagina);
 
     return (
         <DefaultTemplate>
             <div className={styles.header}>
                 <h1 className={styles.title}>Unidades</h1>
-    
-                {/* Exibe o botão de cadastro apenas se não estiver em modo de cadastro ou atualização */}
-                {!showCadastro && !showAtualizar && !unidade && (
+                {!showCadastro && !showAtualizar && (
                     <button onClick={() => setShowCadastro(true)} className={styles.buttonCadastrar}>
                         Cadastrar
                     </button>
                 )}
             </div>
-    
-            {/* Exibe o formulário de busca ou de cadastro/atualização, mas não a lista de usuários */}
-            {!showCadastro && !showAtualizar && !unidade && (
-                <BuscarUnidadeo unidade={unidade} onSearch={handleBusca} setShowAtualizar={setShowAtualizar} />
-            )}
-    
-            {/* Exibe o formulário de cadastro */}
-            {showCadastro && !unidade && (
-                <CadastroUnidade onSubmit={handleCadastro} />
-            )}
-    
-            {/* Exibe o formulário de atualização */}
-            {showAtualizar && (
-                <AtualizarUnidade unidade={unidade} onSubmit={handleAtualizar} />
-            )}
-    
-            {/* Exibe a lista apenas se não estiver em modo de cadastro ou atualização */}
-        {!showCadastro && !showAtualizar && unidade && (
-    <div className={styles.listaUsuarios}>
-        <table className={styles.tableUsuarios}>
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr key={unidade.id}>
-                    <td>{unidade.nome}</td>
-                    <td>
-                        <button
-                            className={styles.buttonUpdate}
-                            onClick={() => {
-                                setShowAtualizar(true);
-                                // unidade já é um objeto único
-                            }}
-                        >
-                            Atualizar
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-)}
 
+            {/* Busca */}
+            {!showCadastro && !showAtualizar && (
+                <BuscarUnidade onSearch={(nome) => setFiltro(nome)} />
+            )}
+
+            {/* Formulários */}
+            {showCadastro && <CadastroUnidade onSubmit={handleCadastro} />}
+            {showAtualizar && unidadeEdicao && (
+                <AtualizarUnidade unidade={unidadeEdicao} onSubmit={handleAtualizar} />
+            )}
+
+            {/* Lista de unidades */}
+            {!showCadastro && !showAtualizar && unidadesPaginadas.length > 0 && (
+                <div className={styles.listaUsuarios}>
+                    <table className={styles.tableUsuarios}>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {unidadesPaginadas.map((uni) => (
+                                <tr key={uni.id}>
+                                    <td>{uni.nome}</td>
+                                    <td>
+                                        <button
+                                            className={styles.buttonUpdate}
+                                            onClick={() => {
+                                                setUnidadeEdicao(uni);
+                                                setShowAtualizar(true);
+                                            }}
+                                        >
+                                            Atualizar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    {/* Paginação */}
+                    <div className={styles.paginacao}>
+                        <button
+                            disabled={paginaAtual === 1}
+                            onClick={() => setPaginaAtual(paginaAtual - 1)}
+                        >
+                            &lt;
+                        </button>
+
+                        <span>Página {paginaAtual} de {totalPaginas}</span>
+
+                        <button
+                            disabled={paginaAtual === totalPaginas}
+                            onClick={() => setPaginaAtual(paginaAtual + 1)}
+                        >
+                            &gt;
+                        </button>
+                    </div>
+                </div>
+            )}
         </DefaultTemplate>
     );
-    
 };
 
 export default Unidade;

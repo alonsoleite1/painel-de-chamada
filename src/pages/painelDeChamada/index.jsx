@@ -14,7 +14,7 @@ const Painel = () => {
   const [slideAtual, setSlideAtual] = useState(0);
   const [overlay, setOverlay] = useState(null);
   const [versiculo, setVersiculo] = useState(null);
-    const [versiculoIndex, setVersiculoIndex] = useState(0);
+  const [versiculoIndex, setVersiculoIndex] = useState(0);
   const [temperatura, setTemperatura] = useState(null);
   const [noticias, setNoticias] = useState([]);
   const [noticiaAtual, setNoticiaAtual] = useState(0);
@@ -174,32 +174,32 @@ const Painel = () => {
   }, []);
 
   // Buscar noticias
-useEffect(() => {
-  const fetchNoticias = async () => {
-    try {
-      const response = await fetch(
-        `https://gnews.io/api/v4/top-headlines?country=br&max=5&token=1f482e0e8896e703760bdc9a1587dc99`
-      );
-      const data = await response.json();
+  useEffect(() => {
+    const fetchNoticias = async () => {
+      try {
+        const response = await fetch(
+          `https://gnews.io/api/v4/top-headlines?country=br&max=5&token=1f482e0e8896e703760bdc9a1587dc99`
+        );
+        const data = await response.json();
 
-      if (data.articles && data.articles.length > 0) {
-        setNoticias(data.articles);
-        setNoticiaAtual(0);
-      } else {
+        if (data.articles && data.articles.length > 0) {
+          setNoticias(data.articles);
+          setNoticiaAtual(0);
+        } else {
+          setNoticias([]);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar notícias:", error);
         setNoticias([]);
       }
-    } catch (error) {
-      console.error("Erro ao buscar notícias:", error);
-      setNoticias([]);
-    }
-  };
+    };
 
-  fetchNoticias(); // primeira chamada ao carregar
+    fetchNoticias(); // primeira chamada ao carregar
 
-  const interval = setInterval(fetchNoticias, 3 * 60 * 60 * 1000); // <-- Aqui: 3 horas
+    const interval = setInterval(fetchNoticias, 3 * 60 * 60 * 1000); // <-- Aqui: 3 horas
 
-  return () => clearInterval(interval);
-}, []);
+    return () => clearInterval(interval);
+  }, []);
 
   // Troca a notícia exibida a cada 5 segundos
   useEffect(() => {
@@ -212,7 +212,7 @@ useEffect(() => {
     return () => clearInterval(intervaloNoticia);
   }, [noticias]);
 
-   useEffect(() => {
+  useEffect(() => {
     const intervalo = setInterval(() => {
       setVersiculoIndex((oldIndex) => (oldIndex + 1) % versiculos.length);
     }, 100000);
@@ -286,7 +286,7 @@ useEffect(() => {
         </div>
       </div>
 
-         <div className={styles.extraInfo}>
+      <div className={styles.extraInfo}>
         📖 "{versiculoAtual.texto}" — {versiculoAtual.referencia}
       </div>
 
