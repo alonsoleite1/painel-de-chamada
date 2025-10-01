@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DefaultTemplate from "../../../components/DefaultTemplate";
 import CadastroUsuario from '../cadastro';
 import AtualizarUsuario from '../atualizar';
@@ -8,93 +8,99 @@ import { toast } from 'react-toastify';
 import styles from './styles.module.scss';
 
 const Usuarios = () => {
-    const [usuario, setUsuario] = useState(null); // Estado para o usuário encontrado
-    const [showCadastro, setShowCadastro] = useState(false); // Estado para exibir o formulário de cadastro
-    const [showAtualizar, setShowAtualizar] = useState(false); // Estado para exibir o formulário de atualização
+    const [usuarios, setUsuarios] = useState([]); // Todos usuários
+    const [filtro, setFiltro] = useState(""); // Filtro de busca (cpf)
+    const [usuarioEdicao, setUsuarioEdicao] = useState(null);
+
+    const [showCadastro, setShowCadastro] = useState(false);
+    const [showAtualizar, setShowAtualizar] = useState(false);
+
+    // Paginação
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const itensPorPagina = 10;
+
+    // Buscar todos usuários na API ao carregar
+    useEffect(() => {
+        const fetchUsuarios = async () => {
+            const token = JSON.parse(localStorage.getItem("@token"));
+            try {
+                const response = await api.get("/usuario", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setUsuarios(response.data);
+            } catch (error) {
+                toast.error(error.response?.data?.message || "Erro ao carregar usuários");
+            }
+        };
+
+        fetchUsuarios();
+    }, []);
 
     const handleCadastro = async (payload) => {
         const token = JSON.parse(localStorage.getItem("@token"));
-
         try {
             await api.post("/usuario", payload, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+                headers: { Authorization: `Bearer ${token}` }
             });
-            setShowCadastro(false); // Fechar o formulário 
+            setShowCadastro(false);
             toast.success("Usuário Cadastrado!");
-            navigate("/usuario");
+            window.location.reload(); // recarregar lista
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message);
         }
     };
 
     const handleAtualizar = async (payload) => {
         const token = JSON.parse(localStorage.getItem("@token"));
-        const cpf = payload.cpf; // Aqui você pode pegar o `id` do usuário
         payload.unidadeId = Number(payload.unidadeId);
 
         try {
-            await api.patch(`/usuario/${cpf}`, payload, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            await api.patch(`/usuario/${payload.cpf}`, payload, {
+                headers: { Authorization: `Bearer ${token}` }
             });
-            setShowAtualizar(false); // Fechar o formulário 
+            setShowAtualizar(false);
             toast.success("Usuário Atualizado!");
-            navigate("/usuario");
+            window.location.reload();
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message);
         }
     };
-    
 
-    const handleBusca = async (cpf) => {
-        const token = JSON.parse(localStorage.getItem("@token"));
+    // Filtro de busca local
+    const usuariosFiltrados = usuarios.filter(user =>
+        filtro ? user.cpf.includes(filtro) : true
+    );
 
-        try {
-            const response = await api.get(`/usuario/${cpf}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setUsuario(response.data); // Exemplo de retorno
-            toast.success("Usuário Encontrado!");
-        } catch (error) {
-            toast.error(error.response.data.message);
-        }
-    };
+    // Paginação
+    const indiceUltimo = paginaAtual * itensPorPagina;
+    const indicePrimeiro = indiceUltimo - itensPorPagina;
+    const usuariosPaginados = usuariosFiltrados.slice(indicePrimeiro, indiceUltimo);
+
+    const totalPaginas = Math.ceil(usuariosFiltrados.length / itensPorPagina);
 
     return (
         <DefaultTemplate>
             <div className={styles.header}>
                 <h1 className={styles.title}>Usuários</h1>
-    
-                {/* Exibe o botão de cadastro apenas se não estiver em modo de cadastro ou atualização */}
-                {!showCadastro && !showAtualizar && !usuario && (
+                {!showCadastro && !showAtualizar && (
                     <button onClick={() => setShowCadastro(true)} className={styles.buttonCadastrar}>
                         Cadastrar
                     </button>
                 )}
             </div>
-    
-            {/* Exibe o formulário de busca ou de cadastro/atualização, mas não a lista de usuários */}
-            {!showCadastro && !showAtualizar && !usuario && (
-                <BuscaUsuario usuario={usuario} onSearch={handleBusca} setShowAtualizar={setShowAtualizar} />
+
+            {!showCadastro && !showAtualizar && (
+                <BuscaUsuario onSearch={(cpf) => setFiltro(cpf)} />
             )}
-    
-            {/* Exibe o formulário de cadastro */}
-            {showCadastro && !usuario && (
-                <CadastroUsuario onSubmit={handleCadastro} />
+
+            {showCadastro && <CadastroUsuario onSubmit={handleCadastro} />}
+            {showAtualizar && usuarioEdicao && (
+                <AtualizarUsuario usuario={usuarioEdicao} onSubmit={handleAtualizar} />
             )}
-    
-            {/* Exibe o formulário de atualização */}
-            {showAtualizar && (
-                <AtualizarUsuario usuario={usuario} onSubmit={handleAtualizar} />
-            )}
-    
-            {/* Exibe a lista apenas se não estiver em modo de cadastro ou atualização */}
-            {!showCadastro && !showAtualizar && usuario && usuario.length > 0 && (
+
+            {!showCadastro && !showAtualizar && usuariosPaginados.length > 0 && (
                 <div className={styles.listaUsuarios}>
                     <table className={styles.tableUsuarios}>
                         <thead>
@@ -107,7 +113,7 @@ const Usuarios = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {usuario.map((user) => (
+                            {usuariosPaginados.map((user) => (
                                 <tr key={user.id}>
                                     <td>{user.nome}</td>
                                     <td>{user.cpf}</td>
@@ -117,8 +123,8 @@ const Usuarios = () => {
                                         <button
                                             className={styles.buttonUpdate}
                                             onClick={() => {
+                                                setUsuarioEdicao(user);
                                                 setShowAtualizar(true);
-                                                setUsuario(user); // Passando o usuário para o formulário de atualização
                                             }}
                                         >
                                             Atualizar
@@ -128,11 +134,30 @@ const Usuarios = () => {
                             ))}
                         </tbody>
                     </table>
+
+                    {/* Paginação */}
+                    <div className={styles.paginacao}>
+                        <button
+                            disabled={paginaAtual === 1}
+                            onClick={() => setPaginaAtual(paginaAtual - 1)}
+                        >
+                            &lt;
+                        </button>
+
+                        <span>Página {paginaAtual} de {totalPaginas}</span>
+
+                        <button
+                            disabled={paginaAtual === totalPaginas}
+                            onClick={() => setPaginaAtual(paginaAtual + 1)}
+                        >
+                            &gt;
+                        </button>
+                    </div>
+
                 </div>
             )}
         </DefaultTemplate>
     );
-    
 };
 
 export default Usuarios;

@@ -5,59 +5,73 @@
   justify-content: center;
   align-items: center;
   margin-top: 2rem;
+  width: 100%;
 }
 
 .formBusca {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem; // espaço entre input e botão
   background-color: $color-white;
-  padding: 1.5rem 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba($color-black, 0.05);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba($color-black, 0.06);
   border: 1px solid $color-gray-light;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
 }
 
 .label {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: $color-gray-dark;
+  display: none; // escondido, mas você pode deixar visível se quiser
 }
 
 .inputBusca {
-  padding: 0.5rem 1rem;
+  flex: 1;
+  padding: 0.6rem 1rem;
   border: 1px solid $color-gray;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 1rem;
   color: $color-gray-dark;
-  margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
 
   &:focus {
     outline: none;
     border-color: $color-blue;
-    box-shadow: 0 0 0 2px rgba($color-blue, 0.2);
+    box-shadow: 0 0 0 3px rgba($color-blue, 0.2);
   }
 }
 
 .errorBusca {
   color: $color-red;
   font-size: 0.875rem;
-  margin-bottom: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .buttonSearch {
-  background-color: $color-blue;
+  background: linear-gradient(135deg, $color-blue, $color-blue-dark);
   color: $color-white;
   border: none;
-  padding: 0.6rem;
+  padding: 0.65rem 1.2rem;
   font-size: 1rem;
-  border-radius: 6px;
+  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 
   &:hover {
-    background-color: $color-blue-dark;
+    background: linear-gradient(135deg, $color-blue-dark, $color-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba($color-blue, 0.25);
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 }
