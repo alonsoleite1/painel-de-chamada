@@ -131,7 +131,7 @@ const Triagem = () => {
     if (!atendimentoAtual) return;
 
     try {
-      await api.patch(`/painel/${atendimentoAtual.id}`, { triagem: true }, {
+      await api.patch(`/painel/${atendimentoAtual.id}`, { triagem: false }, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

@@ -89,6 +89,7 @@ const Recepcao = () => {
             motivo: formData.motivo.toUpperCase(),
             setor: formData.setor,
             unidadeId: user.unidadeId,
+            triagem: formData.triagem === "true" // transforma string do select em boolean
         };
 
         try {
@@ -147,6 +148,25 @@ const Recepcao = () => {
                                 />
                                 {errors.motivo && <span className={styles.error}>Informe o motivo do atendimento</span>}
                             </div>
+
+                            <div>
+                                {/* Só mostra o campo se a unidade não for "teste" ou "teste2" */}
+                                {user?.unidade?.id !== 1 && user?.unidade?.id !== 2 && (
+                                    <div>
+                                        <label>Passar na Triagem ?</label>
+                                        <select
+                                            {...register("triagem", { required: true })}
+                                            defaultValue=""
+                                        >
+                                            <option value="" disabled>Selecione</option>
+                                            <option value={true}>Sim</option>
+                                            <option value={false}>Não</option>
+                                        </select>
+                                        {errors.triagem && <span className={styles.error}>Selecione uma opção de triagem</span>}
+                                    </div>
+                                )}
+                            </div>
+
 
 
                             <div>

@@ -58,24 +58,19 @@ const ListaSetores = ({ setores, onDelete }) => {
 
       {totalPaginas > 1 && (
         <div className={styles.paginacao}>
-          <button onClick={() => setPaginaAtual(1)} disabled={paginaAtual === 1}>
-            « Primeira
-          </button>
           <button onClick={handleAnterior} disabled={paginaAtual === 1}>
-            Anterior
+            « Anterior
           </button>
+
           <span>
             Página {paginaAtual} de {totalPaginas}
           </span>
+
           <button onClick={handleProxima} disabled={paginaAtual === totalPaginas}>
-            Próxima
-          </button>
-          <button onClick={() => setPaginaAtual(totalPaginas)} disabled={paginaAtual === totalPaginas}>
-            Última »
+            Próxima »
           </button>
         </div>
       )}
-
     </div>
   );
 };
