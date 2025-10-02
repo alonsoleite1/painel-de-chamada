@@ -6,8 +6,8 @@ import io from "socket.io-client";
 import { UsuarioContext } from "../../provider/userContext";
 import styles from "./styles.module.scss";
 
-const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
-//const socket = io("http://localhost:5002"); // Conecta-se ao servidor WebSocket
+//const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
+const socket = io("http://localhost:5002"); // Conecta-se ao servidor WebSocket
 
 const Triagem = () => {
   const [fila, setFila] = useState({ normal: [], prioritario: [] });
@@ -55,7 +55,6 @@ const Triagem = () => {
     buscarAtendimentos();
   }, [token, user]);
 
-
   const chamarProximo = async (tipo) => {
     const proximo = fila[tipo][0];
     if (!proximo) return;
@@ -83,7 +82,7 @@ const Triagem = () => {
         socket.emit("chamar-senha", {
           senha: proximo.senha,
           nome: proximo.nome,
-          setor: proximo.setor,
+          setor: user.setor,
           unidade: unidade,  // <-- adiciona aqui
           tipo,
           guiche: user.terminal,
@@ -94,7 +93,7 @@ const Triagem = () => {
         socket.emit("chamar-senha", {
           nome: proximo.nome,
           senha: proximo.senha,
-          setor: proximo.setor,
+          setor: user.setor,
           unidade: unidade,
           tipo,
         });
@@ -118,7 +117,7 @@ const Triagem = () => {
       socket.emit("chamar-senha", {
         nome: atendimentoAtual.nome,
         senha: atendimentoAtual.senha,
-        setor: atendimentoAtual.setor,
+        setor: user.setor,
         tipo: atendimentoAtual.tipo,
         unidade: unidade, // <-- adiciona aqui também
         guiche: user.terminal,
