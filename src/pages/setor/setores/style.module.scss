@@ -3,14 +3,14 @@
 
 .listaSetores {
   width: 100%;
-  overflow-x: auto;
   margin-top: 1.5rem;
   background-color: $color-white;
   border-radius: $border-radius-lg;
   box-shadow: $shadow-light;
   padding: 1rem;
+  overflow-x: auto;
 
-  table {
+  .tableSetores {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
@@ -35,7 +35,6 @@
 
           &:last-child {
             display: flex;
-            justify-content: flex-start;
             gap: 0.5rem;
           }
         }
@@ -76,9 +75,9 @@
 
 .paginacao {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center; // centraliza no meio
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
   margin-top: 1rem;
 
   button {
@@ -115,7 +114,6 @@
   }
 }
 
-/* Input e botão horizontal */
 .searchAction {
   display: flex;
   gap: 0.5rem;
@@ -146,5 +144,3 @@
     }
   }
 }
-
-

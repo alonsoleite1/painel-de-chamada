@@ -4,13 +4,9 @@ import { toast } from 'react-toastify';
 import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { UsuarioContext } from '../../provider/userContext';
+import { locaisPorUnidade } from './stores';
 import styles from './styles.module.scss';
 
-// Locais de trabalho por nome da unidade
-const locaisPorUnidade = {
-  "ARATANHA": ['Consultório 1', 'Consultório 2'],
-  "Secretaria de Saúde": ['Guichê 1', 'Guichê 2']
-};
 
 const Selecao = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();

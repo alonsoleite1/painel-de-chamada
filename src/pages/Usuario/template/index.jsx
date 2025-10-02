@@ -109,6 +109,7 @@ const Usuarios = () => {
                                 <th>CPF</th>
                                 <th>Login</th>
                                 <th>Perfil</th>
+                                <th>Unidade</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -119,6 +120,7 @@ const Usuarios = () => {
                                     <td>{user.cpf}</td>
                                     <td>{user.login}</td>
                                     <td>{user.perfil}</td>
+                                    <td>{user.unidade.nome}</td>
                                     <td>
                                         <button
                                             className={styles.buttonUpdate}
