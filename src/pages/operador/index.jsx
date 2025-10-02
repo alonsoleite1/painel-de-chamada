@@ -103,7 +103,7 @@ const Operador = () => {
         socket.emit("chamar-senha", {
           senha: proximo.senha,
           nome: proximo.nome,
-          setor: proximo.setor,
+          setor: user.setor,
           unidade: unidade,  // <-- adiciona aqui
           tipo,
           guiche: user.terminal,
@@ -114,7 +114,7 @@ const Operador = () => {
         socket.emit("chamar-senha", {
           nome: proximo.nome,
           senha: proximo.senha,
-          setor: proximo.setor,
+          setor: user.setor,
           unidade: unidade,
           tipo,
         });
@@ -138,7 +138,7 @@ const Operador = () => {
       socket.emit("chamar-senha", {
         nome: atendimentoAtual.nome,
         senha: atendimentoAtual.senha,
-        setor: atendimentoAtual.setor,
+        setor: user.setor,
         tipo: atendimentoAtual.tipo,
         unidade: unidade, // <-- adiciona aqui também
         guiche: user.terminal,
