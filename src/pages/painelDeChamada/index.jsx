@@ -146,7 +146,7 @@ const Painel = () => {
 
     const intervalo = setInterval(() => {
       setSlideAtual((prev) => (prev + 1) % slides.length);
-    }, 60000);
+    }, 120000);
 
     return () => clearInterval(intervalo);
   }, [slides]);
