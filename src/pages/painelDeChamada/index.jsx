@@ -57,7 +57,7 @@ const Painel = () => {
   // Função para falar a senha via síntese de voz
   const falarSenha = ({ senha, nome, setor, tipo, guiche = null }) => {
     const guicheFormatado = guiche ? ` ${guiche}` : "";
-    const frase = `${nome}, senha de número ${senha}, ${tipo}, sala ${setor} ${guicheFormatado}.`;
+    const frase = `${nome}, ${tipo}, sala ${setor} ${guicheFormatado}.`;
 
     console.log("🗣️ Frase a ser falada:", frase);
 
