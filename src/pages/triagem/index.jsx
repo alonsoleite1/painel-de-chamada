@@ -6,8 +6,8 @@ import io from "socket.io-client";
 import { UsuarioContext } from "../../provider/userContext";
 import styles from "./styles.module.scss";
 
-//const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
-const socket = io("http://localhost:5002"); // Conecta-se ao servidor WebSocket
+const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
+//const socket = io("http://localhost:5002"); // Conecta-se ao servidor WebSocket
 
 const Triagem = () => {
   const [fila, setFila] = useState({ normal: [], prioritario: [] });
