@@ -52,7 +52,7 @@ const Login = () => {
         Versão: {appVersion} - {appBuildDate}
       </p>
        <footer className={styles.footer}>
-        Todos os direitos reservados © <strong>CODEFER</strong> 2025
+        Todos os direitos reservados © <strong>CODEFER</strong> {new Date().getFullYear()}
       </footer>
     </div>
   );
