@@ -190,7 +190,7 @@ const Operador = () => {
                 className={`${styles.ultimoTipoChamado} ${ultimoTipoChamado === "prioritario" ? styles.prioritario : ""
                   }`}
               >
-                ÚLTIMA SENHA CHAMADA: <span>{ultimoTipoChamado}</span>
+                ÚLTIMA SENHA CHAMADA: <span>{ultimoTipoChamado.toUpperCase()}</span>
               </p>
             )}
 

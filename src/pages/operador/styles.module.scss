@@ -10,27 +10,33 @@
   min-height: 100vh;
 }
 
+/* BOTÃO ATUALIZAR */
+
 .atualizarBox {
   display: flex;
   justify-content: flex-end;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
 
   .btnAtualizar {
-    background-color: #00994d;
+    background: $color-primary;
     color: $color-white;
     border: none;
-    padding: 0.6rem 1.2rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: $border-radius-lg;
     font-weight: bold;
-    border-radius: 0.5rem;
     cursor: pointer;
-    transition: 0.3s ease;
+    transition: $transition-fast;
+    box-shadow: $shadow-light;
 
     &:hover {
-      background-color: #007a3d;
+      background: $color-primary-dark;
+      box-shadow: $shadow-hover;
     }
   }
 }
+
+/* BOTOES PRINCIPAIS */
 
 .botoes {
   display: flex;
@@ -38,111 +44,110 @@
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
+}
 
-  .botaoBox {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: $color-white;
-    padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+.botaoBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: $color-white;
+  padding: 1.8rem;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-light;
+  width: 100%;
+  max-width: 360px;
+  transition: $transition-fast;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $shadow-hover;
+  }
+
+  button {
     width: 100%;
-    max-width: 360px;
+    padding: 1rem;
+    border-radius: $border-radius-lg;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $color-white;
+    margin-bottom: 1rem;
+    transition: $transition-fast;
+  }
+
+  .normal {
+    background: $color-primary;
 
     &:hover {
-      transform: translateY(-5px);
+      background: $color-primary-dark;
+    }
+  }
+
+  .prioritario {
+    background: $color-secondary;
+    color: $color-black;
+
+    &:hover {
+      background: $color-secondary-dark;
+    }
+  }
+}
+
+/* LISTA */
+
+.lista {
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    background: $color-gray-light;
+    border-radius: $border-radius-lg;
+    border: 1px solid $color-gray-light;
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.6rem;
+    box-shadow: $shadow-light;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    transition: $transition-fast;
+
+    &:hover {
+      transform: scale(1.02);
+      box-shadow: $shadow-hover;
     }
 
-    button {
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      border-radius: 0.6rem;
-      font-weight: bold;
-      border: none;
-      width: 100%;
-      color: $color-white;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: background 0.3s ease;
-      margin-bottom: 1rem;
-
-      &.normal {
-        background-color: #0066cc;
-          cursor: pointer;
-
-        &:hover {
-          background-color: #004f9e;
-        }
-      }
-
-      &.prioritario {
-        background-color: #edb810;
-          cursor: pointer;
-
-        &:hover {
-          background-color: #b68e0c;
-        }
-      }
+    strong {
+      font-size: 1.3rem;
+      color: $color-primary-dark;
     }
 
-    .lista {
-      width: 100%;
-      list-style: none;
-      padding: 0;
-      margin: 0;
+    span {
+      font-size: 0.95rem;
+      color: $color-gray-dark;
 
-      li {
-        background-color: $color-pages;
-        border: 1px solid $color-gray-light;
-        padding: 0.8rem 1rem;
-        border-radius: 0.8rem;
-        margin-bottom: 0.6rem;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-        transition: all 0.2s ease;
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
+      &.motivo::before {
+        content: "Motivo: ";
+        font-weight: bold;
+      }
 
-        &:hover {
-          transform: scale(1.02);
-          box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        strong {
-          font-size: 1.3rem;
-          font-weight: bold;
-          color: $color-blue-dark;
-          text-transform: uppercase;
-        }
-
-        span {
-          font-size: 1rem;
-          color: $color-gray-dark;
-
-          &.motivo::before {
-            content: "Motivo: ";
-            font-weight: bold;
-            color: $color-gray-dark;
-          }
-
-          &.nome::before {
-            content: "Nome: ";
-            font-weight: bold;
-            color: $color-gray-dark;
-          }
-        }
+      &.nome::before {
+        content: "Nome: ";
+        font-weight: bold;
       }
     }
   }
 }
 
+/* ATENDIMENTO ATUAL */
+
 .form {
-  background-color: $color-white;
-  border: 2px solid #27ae60;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-  border-radius: 1rem;
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-light;
   padding: 2rem;
   width: 100%;
   max-width: 600px;
@@ -150,81 +155,79 @@
   flex-direction: column;
   gap: 1.5rem;
   align-items: center;
+  border: 2px solid $color-green;
 
   .senhaDestaque {
     font-size: 3rem;
-    color: #1f8a4c;
     font-weight: bold;
-    text-align: center;
+    color: $color-green-dark;
   }
 
-  .chamarNovamente,
-  .finalizar {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: bold;
-    cursor: pointer;
+  button {
     width: 100%;
     max-width: 300px;
-    transition: background 0.3s ease;
+    padding: 1rem;
+    border-radius: $border-radius-lg;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: $transition-fast;
   }
 
   .chamarNovamente {
-    background-color: #f39c12;
+    background: $color-secondary;
     color: $color-black;
 
     &:hover {
-      background-color: #d68910;
+      background: $color-secondary-dark;
     }
   }
 
   .finalizar {
-    background-color: #27ae60;
+    background: $color-green;
     color: $color-white;
 
     &:hover {
-      background-color: #1f8a4c;
+      background: $color-green-dark;
     }
   }
 }
+
+/* FINALIZADOS */
 
 .atendimentosFinalizados {
   width: 100%;
   max-width: 600px;
-  margin-top: 2rem;
-  background-color: $color-pages;
-  border-radius: 1rem;
-  padding: 1.5rem 2rem;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  border-radius: $border-radius-lg;
+  background: $color-white;
+  box-shadow: $shadow-light;
 
   h3 {
     text-align: center;
-    font-size: 1.4rem;
-    font-weight: bold;
+    font-size: 1.3rem;
     color: $color-gray-dark;
 
     span {
-      color: #1f8a4c;
+      color: $color-green;
+      font-weight: bold;
+      font-size: 1.5rem;
     }
   }
 }
+
+/* ULTIMA SENHA */
+
 .ultimoTipoChamado {
   font-weight: bold;
-  font-size: 1.6rem;
-  color: #2c3e50;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  font-size: 1.5rem;
   text-align: center;
 
   span {
-    font-weight: bold;
-    color: #4A90E2; // azul para "normal" por padrão
-    text-transform: uppercase;
+    color: $color-primary;
   }
 
   &.prioritario span {
-    color: #edb810;
+    color: $color-secondary;
   }
 }
