@@ -18,6 +18,7 @@ const Painel = () => {
   const [temperatura, setTemperatura] = useState(null);
   const [noticias, setNoticias] = useState([]);
   const [noticiaAtual, setNoticiaAtual] = useState(0);
+  const [agora, setAgora] = useState(new Date());
 
   const [ultimaSenhaNormal, setUltimaSenhaNormal] = useState(
     localStorage.getItem("ultimaSenhaNormal") || null
@@ -74,8 +75,13 @@ const Painel = () => {
 
   // Conexão e lógica do WebSocket
   useEffect(() => {
-    const socket = io("http://45.70.177.64:3396");
     //const socket = io("http://localhost:5002");
+    const socket = io("http://45.70.177.64:3396", {
+      transports: ["websocket"],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 2000,
+    });
 
     socket.on("connect", () => {
       console.log("✅ Conectado ao servidor WebSocket com ID:", socket.id);
@@ -144,12 +150,20 @@ const Painel = () => {
   useEffect(() => {
     if (slides.length === 0) return;
 
-    const intervalo = setInterval(() => {
-      setSlideAtual((prev) => (prev + 1) % slides.length);
-    }, 120000);
+    const slideAtualArquivo = slides[slideAtual];
 
-    return () => clearInterval(intervalo);
-  }, [slides]);
+    // Se for vídeo, não cria timer
+    if (slideAtualArquivo.endsWith(".mp4")) {
+      return;
+    }
+
+    // Se for imagem, troca após 20 segundos
+    const intervalo = setTimeout(() => {
+      setSlideAtual((prev) => (prev + 1) % slides.length);
+    }, 20000);
+
+    return () => clearTimeout(intervalo);
+  }, [slides, slideAtual]);
 
   //Buscar temperatura 
   useEffect(() => {
@@ -220,6 +234,24 @@ const Painel = () => {
     return () => clearInterval(intervalo);
   }, []);
 
+  // Atualiza a data e hora
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAgora(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Recarrega o painel a cada 6 horas
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      window.location.reload();
+    }, 1000 * 60 * 60 * 6); // recarrega a cada 6 horas
+
+    return () => clearInterval(intervalo);
+  }, []);
+
   // Versículo atual baseado no índice
   const versiculoAtual = versiculos[versiculoIndex];
 
@@ -231,12 +263,24 @@ const Painel = () => {
           {slides.length > 0 ? (
             <div className={styles.slide}>
               {slides[slideAtual].endsWith(".mp4") ? (
-                <video autoPlay muted loop playsInline>
+                <video
+                  key={slides[slideAtual]}
+                  autoPlay
+                  muted
+                  playsInline
+                  preload="auto"
+                  onEnded={() => {
+                    setSlideAtual((prev) => (prev + 1) % slides.length);
+                  }}
+                  onError={() => {
+                    console.log("Erro no vídeo, pulando...");
+                    setSlideAtual((prev) => (prev + 1) % slides.length);
+                  }}
+                >
                   <source
                     src={`http://45.70.177.64:3396/slides/${slides[slideAtual]}`}
                     type="video/mp4"
                   />
-                  Seu navegador não suporta o vídeo.
                 </video>
               ) : (
                 <img
@@ -276,7 +320,7 @@ const Painel = () => {
           {/* Informações inferiores: data, hora, temperatura */}
           <div className={styles.infoInferior}>
             <div className={styles.dataHora}>
-              {new Date().toLocaleString("pt-BR", {
+              {agora.toLocaleString("pt-BR", {
                 dateStyle: "short",
                 timeStyle: "short",
               })}
