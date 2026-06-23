@@ -6,15 +6,14 @@ import io from "socket.io-client";
 import { UsuarioContext } from "../../provider/userContext";
 import styles from "./styles.module.scss";
 
-const socket = io("http://45.70.177.64:3396"); // Conecta-se ao servidor WebSocket
-//const socket = io("http://localhost:5002"); // Conecta-se ao servidor WebSocket
+const socket = io("http://45.70.177.64:3396");
+// const socket = io("http://localhost:5002");
 
 const Operador = () => {
   const [fila, setFila] = useState({ normal: [], prioritario: [] });
   const [atendimentoAtual, setAtendimentoAtual] = useState(null);
   const [atendimentosFinalizados, setAtendimentosFinalizados] = useState([]);
   const [ultimoTipoChamado, setUltimoTipoChamado] = useState(null);
-
 
   const token = JSON.parse(localStorage.getItem("@token"));
   const unidade = JSON.parse(localStorage.getItem("@unidade"));
@@ -23,9 +22,12 @@ const Operador = () => {
 
   const normalize = (value) => {
     if (typeof value === "string") {
-      return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return value
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
     }
-    // Converte outros tipos para string e retorna
+
     return String(value);
   };
 
@@ -44,16 +46,18 @@ const Operador = () => {
           normalize(item.unidadeId) === normalize(user.unidadeId)
       );
 
-
       const filaNormal = aguardando.filter((item) => item.tipo === "normal");
-      const filaPrioritario = aguardando.filter((item) => item.tipo === "prioritario");
+      const filaPrioritario = aguardando.filter(
+        (item) => item.tipo === "prioritario"
+      );
 
       setFila({ normal: filaNormal, prioritario: filaPrioritario });
 
       const finalizados = data.filter(
         (item) =>
           item.status === "encerrado" &&
-          normalize(item.setor) === normalize(user.setor)
+          normalize(item.setor) === normalize(user.setor) &&
+          normalize(item.unidadeId) === normalize(user.unidadeId)
       );
 
       setAtendimentosFinalizados(finalizados);
@@ -64,20 +68,19 @@ const Operador = () => {
   };
 
   useEffect(() => {
-    if (unidade) {
-      socket.emit("entrar-na-sala", user.unidade); // entra na sala da unidade
+    if (unidade && user?.unidade) {
+      socket.emit("entrar-na-sala", user.unidade);
       console.log(`Operador conectado na unidade: ${unidade}`);
     }
-  }, [user]);
-
+  }, [user, unidade]);
 
   useEffect(() => {
     buscarAtendimentos();
   }, [token, user]);
 
+  const chamarProximo = async (tipo, atendimentoSelecionado = null) => {
+    const proximo = atendimentoSelecionado || fila[tipo][0];
 
-  const chamarProximo = async (tipo) => {
-    const proximo = fila[tipo][0];
     if (!proximo) return;
 
     try {
@@ -93,24 +96,18 @@ const Operador = () => {
       setUltimoTipoChamado(tipo);
       localStorage.setItem("ultimoTipoChamado", tipo);
 
-      // Emite um evento para o painel chamar a senha
-      // console.log("Emitindo evento para o painel:", proximo.senha, proximo.setor);
-
-      // Verifica se o operador está vinculado a um guichê
       if (user.terminal) {
-        // Se houver um guichê vinculado, emite a chamada para esse guichê
         console.log("Emitindo evento para o guichê:", user.terminal);
+
         socket.emit("chamar-senha", {
           senha: proximo.senha,
           nome: proximo.nome,
           setor: user.setor,
-          unidade: unidade,  // <-- adiciona aqui
+          unidade: unidade,
           tipo,
           guiche: user.terminal,
         });
-
       } else {
-        // Caso contrário, chama a senha para o painel sem guichê
         socket.emit("chamar-senha", {
           nome: proximo.nome,
           senha: proximo.senha,
@@ -122,8 +119,9 @@ const Operador = () => {
 
       setFila((prev) => ({
         ...prev,
-        [tipo]: prev[tipo].slice(1),
+        [tipo]: prev[tipo].filter((item) => item.id !== proximo.id),
       }));
+
       toast.info(`Chamando senha ${proximo.senha}`);
     } catch (error) {
       toast.error("Erro ao atualizar atendimento");
@@ -133,17 +131,16 @@ const Operador = () => {
 
   const repetirChamada = () => {
     if (atendimentoAtual) {
-      // Emite um evento para o painel repetir a chamada da senha
       console.log("Repetindo chamada da senha:", atendimentoAtual.senha);
+
       socket.emit("chamar-senha", {
         nome: atendimentoAtual.nome,
         senha: atendimentoAtual.senha,
         setor: user.setor,
         tipo: atendimentoAtual.tipo,
-        unidade: unidade, // <-- adiciona aqui também
+        unidade: unidade,
         guiche: user.terminal,
       });
-
     }
   };
 
@@ -151,14 +148,19 @@ const Operador = () => {
     if (!atendimentoAtual) return;
 
     try {
-      await api.patch(`/painel/${atendimentoAtual.id}`, { status: "encerrado" }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.patch(
+        `/painel/${atendimentoAtual.id}`,
+        { status: "encerrado" },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       setAtendimentosFinalizados((prev) => [
         ...prev,
         { ...atendimentoAtual, status: "encerrado" },
       ]);
+
       setAtendimentoAtual(null);
       toast.success("Atendimento finalizado");
     } catch (error) {
@@ -167,13 +169,29 @@ const Operador = () => {
     }
   };
 
+  const voltarAtendimento = () => {
+    if (!atendimentoAtual) return;
+
+    setFila((prev) => ({
+      ...prev,
+      [atendimentoAtual.tipo]: [
+        atendimentoAtual,
+        ...prev[atendimentoAtual.tipo],
+      ],
+    }));
+
+    setAtendimentoAtual(null);
+
+    toast.info("Atendimento retornou para a fila");
+  };
+
   useEffect(() => {
     const salvo = localStorage.getItem("ultimoTipoChamado");
+
     if (salvo) {
       setUltimoTipoChamado(salvo);
     }
   }, []);
-
 
   return (
     <DefaultTemplate>
@@ -181,16 +199,21 @@ const Operador = () => {
         {!atendimentoAtual && (
           <>
             <div className={styles.atualizarBox}>
-              <button className={styles.btnAtualizar} onClick={buscarAtendimentos}>
+              <button
+                className={styles.btnAtualizar}
+                onClick={buscarAtendimentos}
+              >
                 🔄 Atualizar Lista
               </button>
             </div>
+
             {ultimoTipoChamado && (
               <p
                 className={`${styles.ultimoTipoChamado} ${ultimoTipoChamado === "prioritario" ? styles.prioritario : ""
                   }`}
               >
-                ÚLTIMA SENHA CHAMADA: <span>{ultimoTipoChamado.toUpperCase()}</span>
+                ÚLTIMA SENHA CHAMADA:{" "}
+                <span>{ultimoTipoChamado.toUpperCase()}</span>
               </p>
             )}
 
@@ -198,17 +221,35 @@ const Operador = () => {
               {["normal", "prioritario"].map((tipo) => (
                 <div key={tipo} className={styles.botaoBox}>
                   <button
-                    className={tipo === "normal" ? styles.normal : styles.prioritario}
+                    className={
+                      tipo === "normal" ? styles.normal : styles.prioritario
+                    }
                     onClick={() => chamarProximo(tipo)}
                   >
                     {tipo === "normal" ? "NORMAL" : "PRIORIDADE"}
                   </button>
+
                   <ul className={styles.lista}>
                     {fila[tipo].map((item) => (
                       <li key={item.id}>
                         <strong>SENHA: 0{item.senha}</strong>
-                        <span className={styles.nome}>{item.nome.toUpperCase()}</span>
+
+                        <span className={styles.nome}>
+                          {item.nome.toUpperCase()}
+                        </span>
+
                         <span className={styles.motivo}>{item.motivo}</span>
+
+                        <button
+                          type="button"
+                          className={`${styles.btnChamarPessoa} ${tipo === "prioritario"
+                              ? styles.btnPrioridade
+                              : ""
+                            }`}
+                          onClick={() => chamarProximo(tipo, item)}
+                        >
+                          Chamar esta senha
+                        </button>
                       </li>
                     ))}
                   </ul>
@@ -218,7 +259,6 @@ const Operador = () => {
           </>
         )}
 
-        {/* Atendimento Atual */}
         {atendimentoAtual && (
           <form
             onSubmit={(e) => {
@@ -230,6 +270,7 @@ const Operador = () => {
             <h2 className={styles.senhaDestaque}>
               Senha: {atendimentoAtual?.senha || "Sem senha"}
             </h2>
+
             <button
               type="button"
               className={styles.chamarNovamente}
@@ -241,12 +282,22 @@ const Operador = () => {
             <button type="submit" className={styles.finalizar}>
               Finalizar
             </button>
+
+            <button
+              type="button"
+              className={styles.voltar}
+              onClick={voltarAtendimento}
+            >
+              Voltar
+            </button>
           </form>
         )}
 
-        {/* Finalizados */}
         <div className={styles.atendimentosFinalizados}>
-          <h3>TOTAL DE ATENDIMENTOS - <span> {atendimentosFinalizados.length}</span></h3>
+          <h3>
+            TOTAL DE ATENDIMENTOS -{" "}
+            <span>{atendimentosFinalizados.length}</span>
+          </h3>
         </div>
       </div>
     </DefaultTemplate>

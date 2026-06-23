@@ -71,6 +71,25 @@
       transform: scale(0.97);
     }
   }
+
+    .buttonAtualizar {
+    background-color: $color-blue;
+    color: $color-white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: $border-radius-lg;
+    cursor: pointer;
+    transition: background-color $transition-fast, box-shadow $transition-fast;
+
+    &:hover {
+      background-color: $color-blue-dark;
+      box-shadow: $shadow-hover;
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
 }
 
 .paginacao {
@@ -142,5 +161,27 @@
     &:active {
       transform: scale(0.97);
     }
+  }
+}
+
+.filtroContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.selectFiltro {
+  min-width: 250px;
+  padding: 0.6rem 1rem;
+  border: 1px solid $color-gray-light;
+  border-radius: $border-radius-lg;
+  background: $color-white;
+  color: $color-gray-dark;
+  font-size: 0.95rem;
+  box-shadow: $shadow-light;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
   }
 }
