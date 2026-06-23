@@ -4,17 +4,18 @@ import { toast } from "react-toastify";
 import api from "../../../services/api";
 import CadastroSetor from "../cadastro";
 import ListaSetores from "../setores";
+import AtualizarSetor from "../atualizar";
 import styles from "./style.module.scss";
-
 
 const Setor = () => {
   const [setores, setSetores] = useState([]);
   const [unidades, setUnidades] = useState([]);
   const [showCadastro, setShowCadastro] = useState(false);
+  const [showAtualizar, setShowAtualizar] = useState(false);
+  const [setorEdicao, setSetorEdicao] = useState(null);
 
   const token = JSON.parse(localStorage.getItem("@token"));
 
-  // Carrega setores e unidades
   useEffect(() => {
     carregarSetores();
     carregarUnidades();
@@ -27,7 +28,6 @@ const Setor = () => {
       });
       setSetores(response.data);
     } catch (error) {
-      console.log(error)
       toast.error(error.response?.data?.message || "Erro ao carregar setores");
     }
   };
@@ -44,18 +44,46 @@ const Setor = () => {
   };
 
   const handleCadastro = async (payload) => {
-    payload.unidadeId = Number(payload.unidadeId);
-    payload.nome = payload.nome.toUpperCase();
+    const data = {
+      nome: payload.nome.toUpperCase(),
+      unidadeId: Number(payload.unidadeId),
+    };
 
     try {
-      await api.post("/setor", payload, {
+      await api.post("/setor", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       toast.success("Setor criado!");
       setShowCadastro(false);
       carregarSetores();
     } catch (error) {
       toast.error(error.response?.data?.message || "Erro ao cadastrar setor");
+    }
+  };
+
+  const abrirAtualizar = (setor) => {
+    setSetorEdicao(setor);
+    setShowAtualizar(true);
+    setShowCadastro(false);
+  };
+
+  const handleAtualizar = async (payload) => {
+    const data = {
+      nome: payload.nome.toUpperCase(),
+    };
+
+    try {
+      await api.patch(`/setor/${setorEdicao.id}`, data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      toast.success("Setor atualizado!");
+      setShowAtualizar(false);
+      setSetorEdicao(null);
+      carregarSetores();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Erro ao atualizar setor");
     }
   };
 
@@ -66,6 +94,7 @@ const Setor = () => {
       await api.delete(`/setor/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       toast.success("Setor deletado!");
       carregarSetores();
     } catch (error) {
@@ -77,7 +106,8 @@ const Setor = () => {
     <DefaultTemplate>
       <div className={styles.header}>
         <h1 className={styles.title}>Setores</h1>
-        {!showCadastro && (
+
+        {!showCadastro && !showAtualizar && (
           <button
             onClick={() => setShowCadastro(true)}
             className={styles.buttonCadastrar}
@@ -87,7 +117,6 @@ const Setor = () => {
         )}
       </div>
 
-      {/* Formulário de cadastro */}
       {showCadastro && (
         <CadastroSetor
           onSubmit={handleCadastro}
@@ -96,9 +125,23 @@ const Setor = () => {
         />
       )}
 
-      {/* Lista de setores */}
-      {!showCadastro && (
-        <ListaSetores setores={setores} onDelete={handleDelete} />
+      {showAtualizar && setorEdicao && (
+        <AtualizarSetor
+          setor={setorEdicao}
+          onSubmit={handleAtualizar}
+          onCancel={() => {
+            setShowAtualizar(false);
+            setSetorEdicao(null);
+          }}
+        />
+      )}
+
+      {!showCadastro && !showAtualizar && (
+        <ListaSetores
+          setores={setores}
+          onDelete={handleDelete}
+          onEdit={abrirAtualizar}
+        />
       )}
     </DefaultTemplate>
   );

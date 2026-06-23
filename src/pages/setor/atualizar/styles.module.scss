@@ -1,0 +1,116 @@
+@use "../../../styles/globals.scss" as *;
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background-color: $color-pages;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid $color-gray-light;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: $color-gray-dark;
+  }
+
+  .input,
+  .select {
+    padding: 0.5rem;
+    border: 1px solid $color-gray;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    background-color: $color-white;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: $color-blue;
+    }
+  }
+
+  .error {
+    color: $color-red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.halfWidth {
+  width: calc(50% - 0.5rem);
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.buttonSave,
+.buttonCancel {
+  min-width: 140px;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: $border-radius-lg;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-fast;
+  box-shadow: $shadow-light;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-hover;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.buttonSave {
+  background: linear-gradient(
+    135deg,
+    $color-green,
+    $color-green-dark
+  );
+  color: $color-white;
+
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      $color-green-light,
+      $color-green
+    );
+  }
+}
+
+.buttonCancel {
+  background: linear-gradient(
+    135deg,
+    $color-red,
+    $color-red-dark
+  );
+  color: $color-white;
+
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      $color-red-light,
+      $color-red
+    );
+  }
+}

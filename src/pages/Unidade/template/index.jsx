@@ -51,7 +51,7 @@ const Unidade = () => {
     };
 
     const handleAtualizar = async (payload) => {
-        console.log(unidadeEdicao)
+        
         const token = JSON.parse(localStorage.getItem("@token"));
         try {
             await api.patch(`/unidade/${unidadeEdicao.id}`, payload, {
