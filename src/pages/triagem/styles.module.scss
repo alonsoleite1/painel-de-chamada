@@ -1,12 +1,17 @@
 @use '../../styles/globals.scss' as *;
 
+$shadow-card: 0 10px 25px rgba(0, 0, 0, 0.08);
+$shadow-card-hover: 0 14px 35px rgba(0, 0, 0, 0.14);
+$radius-xl: 1rem;
+$border-soft: 1px solid rgba(0, 0, 0, 0.06);
+
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 2rem;
-  gap: 2rem;
-  background-color: $color-pages;
+  gap: 1.5rem;
+  background: linear-gradient(180deg, $color-pages 0%, $color-white 100%);
   min-height: 100vh;
 }
 
@@ -14,217 +19,324 @@
   display: flex;
   justify-content: flex-end;
   width: 100%;
-  max-width: 800px;
+  max-width: 980px;
 
   .btnAtualizar {
-    background-color: #00994d;
+    background: $color-primary;
     color: $color-white;
     border: none;
-    padding: 0.6rem 1.2rem;
-    font-weight: bold;
-    border-radius: 0.5rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: $radius-xl;
+    font-weight: 700;
     cursor: pointer;
-    transition: 0.3s ease;
+    transition: $transition-fast;
+    box-shadow: $shadow-light;
 
     &:hover {
-      background-color: #007a3d;
+      background: $color-primary-dark;
+      transform: translateY(-2px);
+      box-shadow: $shadow-hover;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.ultimoTipoChamado {
+  width: 100%;
+  max-width: 980px;
+  background: $color-white;
+  border-radius: $radius-xl;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: $color-gray-dark;
+  box-shadow: $shadow-card;
+  border-left: 6px solid $color-primary;
+
+  span {
+    color: $color-primary;
+  }
+
+  &.prioritario {
+    border-left-color: $color-secondary;
+
+    span {
+      color: $color-secondary-dark;
     }
   }
 }
 
 .botoes {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
+  max-width: 980px;
+}
 
-  .botaoBox {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: $color-white;
-    padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+.botaoBox {
+  display: flex;
+  flex-direction: column;
+  background: $color-white;
+  padding: 1.25rem;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-card;
+  border: $border-soft;
+  width: 100%;
+  max-width: 430px;
+  transition: $transition-fast;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-card-hover;
+  }
+
+  > button {
     width: 100%;
-    max-width: 360px;
+    padding: 1.1rem;
+    border-radius: $radius-xl;
+    border: none;
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $color-white;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: $transition-fast;
 
     &:hover {
-      transform: translateY(-5px);
+      transform: translateY(-2px);
+      box-shadow: $shadow-hover;
     }
 
-    button {
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      border-radius: 0.6rem;
-      font-weight: bold;
-      border: none;
-      width: 100%;
-      color: $color-white;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: background 0.3s ease;
-      margin-bottom: 1rem;
+    &:active {
+      transform: scale(0.98);
+    }
+  }
 
-      &.normal {
-        background-color: #0066cc;
-          cursor: pointer;
+  .normal {
+    background: linear-gradient(135deg, $color-primary, $color-primary-dark);
+  }
 
-        &:hover {
-          background-color: #004f9e;
-        }
-      }
+  .prioritario {
+    background: linear-gradient(135deg, $color-secondary, $color-secondary-dark);
+    color: $color-black;
+  }
+}
 
-      &.prioritario {
-        background-color: #edb810;
-          cursor: pointer;
+.lista {
+  width: 100%;
+  max-height: 520px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0.25rem;
+  margin: 0;
 
-        &:hover {
-          background-color: #b68e0c;
-        }
-      }
+  li {
+    background: $color-gray-light;
+    border-radius: $radius-xl;
+    border: $border-soft;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    box-shadow: $shadow-light;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    transition: $transition-fast;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-card-hover;
+      background: $color-white;
     }
 
-    .lista {
-      width: 100%;
-      list-style: none;
-      padding: 0;
-      margin: 0;
+    strong {
+      font-size: 1.35rem;
+      color: $color-primary-dark;
+    }
 
-      li {
-        background-color: $color-pages;
-        border: 1px solid $color-gray-light;
-        padding: 0.8rem 1rem;
-        border-radius: 0.8rem;
-        margin-bottom: 0.6rem;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-        transition: all 0.2s ease;
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
+    span {
+      font-size: 0.95rem;
+      color: $color-gray-dark;
+      line-height: 1.3;
 
-        &:hover {
-          transform: scale(1.02);
-          box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
-        }
+      &.motivo::before {
+        content: "Motivo: ";
+        font-weight: 800;
+      }
 
-        strong {
-          font-size: 1.3rem;
-          font-weight: bold;
-          color: $color-blue-dark;
-          text-transform: uppercase;
-        }
-
-        span {
-          font-size: 1rem;
-          color: $color-gray-dark;
-
-          &.motivo::before {
-            content: "Motivo: ";
-            font-weight: bold;
-            color: $color-gray-dark;
-          }
-
-          &.nome::before {
-            content: "Nome: ";
-            font-weight: bold;
-            color: $color-gray-dark;
-          }
-        }
+      &.nome::before {
+        content: "Nome: ";
+        font-weight: 800;
       }
     }
   }
 }
 
-.form {
-  background-color: $color-white;
-  border: 2px solid #27ae60;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-  border-radius: 1rem;
-  padding: 2rem;
+.btnChamarPessoa {
+  margin-top: 0.6rem;
   width: 100%;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  align-items: center;
+  background: $color-primary;
+  color: $color-white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: $radius-xl;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: $transition-fast;
+  box-shadow: $shadow-light;
 
-  .senhaDestaque {
-    font-size: 3rem;
-    color: #1f8a4c;
-    font-weight: bold;
-    text-align: center;
+  &:hover {
+    background: $color-primary-dark;
+    box-shadow: $shadow-hover;
+    transform: translateY(-2px);
   }
 
-  .chamarNovamente,
-  .finalizar {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: bold;
-    cursor: pointer;
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.btnPrioridade {
+  background: $color-secondary;
+  color: $color-black;
+
+  &:hover {
+    background: $color-secondary-dark;
+  }
+}
+
+.form {
+  background: $color-white;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-card;
+  padding: 2rem;
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  border: 2px solid $color-green;
+
+  .senhaDestaque {
     width: 100%;
-    max-width: 300px;
-    transition: background 0.3s ease;
+    text-align: center;
+    font-size: 3.4rem;
+    font-weight: 900;
+    color: $color-green-dark;
+    background: $color-gray-light;
+    padding: 1.25rem;
+    border-radius: $radius-xl;
+    margin: 0 0 0.5rem;
+  }
+
+  button {
+    width: 100%;
+    max-width: 360px;
+    padding: 1rem;
+    border-radius: $radius-xl;
+    border: none;
+    font-weight: 800;
+    cursor: pointer;
+    transition: $transition-fast;
+    box-shadow: $shadow-light;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-hover;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
   }
 
   .chamarNovamente {
-    background-color: #f39c12;
+    background: $color-secondary;
     color: $color-black;
 
     &:hover {
-      background-color: #d68910;
+      background: $color-secondary-dark;
     }
   }
 
   .finalizar {
-    background-color: #27ae60;
+    background: $color-green;
     color: $color-white;
 
     &:hover {
-      background-color: #1f8a4c;
+      background: $color-green-dark;
+    }
+  }
+
+  .voltar {
+    background: $color-gray;
+    color: $color-white;
+
+    &:hover {
+      background: $color-gray-dark;
     }
   }
 }
 
 .atendimentosFinalizados {
   width: 100%;
-  max-width: 600px;
-  margin-top: 2rem;
-  background-color: $color-pages;
-  border-radius: 1rem;
-  padding: 1.5rem 2rem;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  max-width: 560px;
+  padding: 1.2rem;
+  border-radius: $radius-xl;
+  background: $color-white;
+  box-shadow: $shadow-card;
+  border: $border-soft;
 
   h3 {
+    margin: 0;
     text-align: center;
-    font-size: 1.4rem;
-    font-weight: bold;
+    font-size: 1.15rem;
     color: $color-gray-dark;
 
     span {
-      color: #1f8a4c;
+      color: $color-green;
+      font-weight: 900;
+      font-size: 1.5rem;
     }
   }
 }
-.ultimoTipoChamado {
-  font-weight: bold;
-  font-size: 1.6rem;
-  color: #2c3e50;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  text-align: center;
 
-  span {
-    font-weight: bold;
-    color: #4A90E2; // azul para "normal" por padrão
-    text-transform: uppercase;
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
   }
 
-  &.prioritario span {
-    color: #edb810;
+  .atualizarBox {
+    justify-content: center;
+
+    .btnAtualizar {
+      width: 100%;
+    }
+  }
+
+  .botoes {
+    gap: 1rem;
+  }
+
+  .botaoBox {
+    max-width: 100%;
+    padding: 1rem;
+  }
+
+  .form {
+    padding: 1.25rem;
+
+    .senhaDestaque {
+      font-size: 2.4rem;
+    }
   }
 }
